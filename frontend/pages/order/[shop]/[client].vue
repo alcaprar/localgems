@@ -136,7 +136,7 @@ export default {
       if (this.timeout) clearTimeout(this.timeout);
       this.timeout = window.setTimeout(async () => {
         this.$log().debug("onNotesChanges", this.order.notes);
-        const url = `${this.$config.public.apiBaseUrl}/orders/${this.order.id}/notes`;
+        const url = `${this.$config.public.apiBaseUrl}/api/orders/${this.order.id}/notes`;
         let response = await fetch(url, {
           method: "POST",
           body: JSON.stringify({
@@ -149,7 +149,7 @@ export default {
     async increment(orderItemId: number) {
       this.$log().debug("increment", orderItemId);
 
-      const url = `${this.$config.public.apiBaseUrl}/order-items/${orderItemId}/increment`;
+      const url = `${this.$config.public.apiBaseUrl}/api/order-items/${orderItemId}/increment`;
       let response = await fetch(url, {
         method: "POST",
       });
@@ -164,7 +164,7 @@ export default {
     async decrement(orderItemId: number) {
       this.$log().debug("decrement", orderItemId);
 
-      const url = `${this.$config.public.apiBaseUrl}/order-items/${orderItemId}/decrement`;
+      const url = `${this.$config.public.apiBaseUrl}/api/order-items/${orderItemId}/decrement`;
       let response = await fetch(url, {
         method: "POST",
       });
