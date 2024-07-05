@@ -7,7 +7,7 @@ import { factories } from '@strapi/strapi'
 export default factories.createCoreController('api::order.order', {
   async findOne(ctx) {
     const orderId = ctx.params.id;
-    console.log('[controllers][orders][findOne] saleId', orderId)
+    strapi.log.info('[controllers][orders][findOne] saleId', orderId)
     const orderEntity = await strapi.db.query('api::order.order').findOne({
       where: { id: orderId },
       populate: [
@@ -18,11 +18,11 @@ export default factories.createCoreController('api::order.order', {
         'client'
       ]
     })
-    console.log('[controllers][orders][findOne] orderEntity', orderEntity)
+    strapi.log.info('[controllers][orders][findOne] orderEntity', orderEntity)
     return orderEntity;
   },
   async updateNotes(ctx, next) {
-    console.log('updateNotes', ctx.params, ctx.request.body)
+    strapi.log.info('updateNotes', ctx.params, ctx.request.body)
     let order_id = ctx.params.id
     if (!order_id) {
       return ctx.badRequest('Missing or invalid id', { order_id })

@@ -7,7 +7,7 @@ import { factories } from '@strapi/strapi'
 export default factories.createCoreController('api::sale.sale', {
     async findOne(ctx) {
         const saleId = ctx.params.id;
-        console.log('[controllers][sales][findOne] saleId', saleId)
+        strapi.log.info('[controllers][sales][findOne] saleId', saleId)
         const saleEntity = await strapi.db.query('api::sale.sale').findOne({
             where: { id: saleId },
             populate: [
@@ -15,7 +15,7 @@ export default factories.createCoreController('api::sale.sale', {
                 'product_sales.product'
             ]
         })
-        console.log('[controllers][sales][findOne] saleEntity', saleEntity)
+        strapi.log.info('[controllers][sales][findOne] saleEntity', saleEntity)
         return saleEntity;
     },
     async create(ctx) {
@@ -28,7 +28,7 @@ export default factories.createCoreController('api::sale.sale', {
             limit: 1,
             orderBy: { endDate: 'desc' }
         });
-        console.log('[controllers][sales] salesOpenNow', salesOpenNow)
+        strapi.log.info('[controllers][sales] salesOpenNow', salesOpenNow)
         if (salesOpenNow.length > 0) {
             return ctx.badRequest('There is already another sale open')
         }
@@ -40,7 +40,7 @@ export default factories.createCoreController('api::sale.sale', {
         const clients = await strapi.db.query('api::client.client').findMany({
             where: { shop: shopId },
         });
-        console.log('[controllers][sales] clients', clients)
+        strapi.log.info('[controllers][sales] clients', clients)
 
         for (let client of clients) {
             await strapi.entityService.create('api::order.order', {
@@ -86,7 +86,7 @@ export default factories.createCoreController('api::sale.sale', {
     },
     async getOrders(ctx) {
         let saleId = ctx.params.id;
-        console.log('[controllers][getOrders] saleId', saleId)
+        strapi.log.info('[controllers][getOrders] saleId', saleId)
 
         const orders = await strapi.db.query('api::order.order').findMany({
             where: { sale: saleId },
@@ -95,7 +95,7 @@ export default factories.createCoreController('api::sale.sale', {
                 'order_items'
             ]
         });
-        console.log('[controllers][getOrders] orders', orders)
+        strapi.log.info('[controllers][getOrders] orders', orders)
 
         let ordersWithOneItem = orders.filter((order) => {
             // returning only the orders that have at least one item
@@ -104,12 +104,12 @@ export default factories.createCoreController('api::sale.sale', {
                 return order_item.quantity > 0
             });
 
-            console.log('[controllers][getOrders] order_items', order_items)
+            strapi.log.info('[controllers][getOrders] order_items', order_items)
             return order_items.length > 0
         });
 
 
-        console.log('[controllers][getOrders] ordersWithOneItem', ordersWithOneItem)
+        strapi.log.info('[controllers][getOrders] ordersWithOneItem', ordersWithOneItem)
 
         return ordersWithOneItem;
     }

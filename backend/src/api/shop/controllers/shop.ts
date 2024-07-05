@@ -7,7 +7,7 @@ import sale from '../../sale/controllers/sale'
 
 export default factories.createCoreController('api::shop.shop', {
   async checkClient(ctx, next) {
-    console.log('checkClient', ctx.params)
+    strapi.log.info('checkClient', ctx.params)
     const shopEntity = await strapi.db
       .query('api::shop.shop')
       .findOne({ where: { slug: ctx.params.shop } })
@@ -20,7 +20,7 @@ export default factories.createCoreController('api::shop.shop', {
     const clientEntity = await strapi.db
       .query('api::client.client')
       .findOne({ where: { shop: shopEntity.id, username: ctx.params.client } })
-    console.log('clientEntity', clientEntity)
+    strapi.log.info('clientEntity', clientEntity)
 
     if (!clientEntity) {
       return ctx.badRequest('Client not found', { client: ctx.params.client })
@@ -31,10 +31,10 @@ export default factories.createCoreController('api::shop.shop', {
   async lastOrder(ctx, next) {
     const shop = ctx.params.shop
     const client = ctx.params.client
-    console.log({ shop, client })
+    strapi.log.info('[lastOrder]', { shop, client })
 
     const shopEntity = await strapi.db.query('api::shop.shop').findOne({ where: { slug: shop } })
-    console.log('shopEntity', shopEntity)
+    strapi.log.info('[lastOrder] shopEntity', shopEntity)
 
     if (!shopEntity) {
       return ctx.badRequest('Shop not found', { shop })
@@ -43,7 +43,7 @@ export default factories.createCoreController('api::shop.shop', {
     const clientEntity = await strapi.db
       .query('api::client.client')
       .findOne({ where: { shop: shopEntity.id, username: client } })
-    console.log('clientEntity', clientEntity)
+    strapi.log.info('[lastOrder] clientEntity', clientEntity)
 
     if (!clientEntity) {
       return ctx.badRequest('Client not found', { client })
@@ -58,7 +58,7 @@ export default factories.createCoreController('api::shop.shop', {
     if (!sales || sales.length == 0) {
       return ctx.badRequest('No sale for this shop', { shop })
     }
-    console.log('sales', sales)
+    strapi.log.info('[lastOrder] sales', sales)
 
     const lastSale = sales[0]
 
@@ -71,16 +71,16 @@ export default factories.createCoreController('api::shop.shop', {
         'order_items.product_sale.product'
       ]
     })
-    console.log('orderEntity', orderEntity)
+    strapi.log.info('[lastOrder] orderEntity', orderEntity)
 
     return orderEntity
   },
   async clients(ctx, next) {
     const shop = ctx.params.shop
-    console.log({ shop })
+    strapi.log.info({ shop })
 
     const shopEntity = await strapi.db.query('api::shop.shop').findOne({ where: { id: shop } })
-    console.log('shopEntity', shopEntity)
+    strapi.log.info('shopEntity', shopEntity)
 
     if (!shopEntity) {
       return ctx.badRequest('Shop not found', { shop })
@@ -89,16 +89,16 @@ export default factories.createCoreController('api::shop.shop', {
     const clientEntities = await strapi.db
       .query('api::client.client')
       .findMany({ where: { shop } })
-    console.log('[controllers][shop][clients] clientEntities', clientEntities)
+    strapi.log.info('[controllers][shop][clients] clientEntities', clientEntities)
 
     return clientEntities
   },
   async products(ctx, next) {
     const shop = ctx.params.shop
-    console.log({ shop })
+    strapi.log.info({ shop })
 
     const shopEntity = await strapi.db.query('api::shop.shop').findOne({ where: { id: shop } })
-    console.log('shopEntity', shopEntity)
+    strapi.log.info('shopEntity', shopEntity)
 
     if (!shopEntity) {
       return ctx.badRequest('Shop not found', { shop })
@@ -107,16 +107,16 @@ export default factories.createCoreController('api::shop.shop', {
     const productEntities = await strapi.db
       .query('api::product.product')
       .findMany({ where: { shop } })
-    console.log('productEntities', productEntities)
+    strapi.log.info('productEntities', productEntities)
 
     return productEntities
   },
   async sales(ctx, next) {
     const shop = ctx.params.shop
-    console.log({ shop })
+    strapi.log.info({ shop })
 
     const shopEntity = await strapi.db.query('api::shop.shop').findOne({ where: { id: shop } })
-    console.log('shopEntity', shopEntity)
+    strapi.log.info('shopEntity', shopEntity)
 
     if (!shopEntity) {
       return ctx.badRequest('Shop not found', { shop })
@@ -125,7 +125,7 @@ export default factories.createCoreController('api::shop.shop', {
     const saleEntities = await strapi.db
       .query('api::sale.sale')
       .findMany({ where: { shop } })
-    console.log('saleEntities', saleEntities)
+    strapi.log.info('saleEntities', saleEntities)
 
     return saleEntities
   }

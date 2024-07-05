@@ -6,7 +6,7 @@ import { factories } from '@strapi/strapi'
 
 export default factories.createCoreController('api::order-item.order-item', {
   async increment(ctx, next) {
-    console.log('increment', ctx.params, ctx.request.body)
+    strapi.log.info('increment', ctx.params, ctx.request.body)
     let orderItemId = ctx.params.id
     if (!orderItemId) {
       return ctx.badRequest('Missing or invalid id', {
@@ -17,7 +17,7 @@ export default factories.createCoreController('api::order-item.order-item', {
     const orderItemEntity = await strapi.db
       .query('api::order-item.order-item')
       .findOne({ where: { id: orderItemId }, populate: ['product_sale'] })
-    console.log('orderItemEntity', orderItemEntity)
+    strapi.log.info('orderItemEntity', orderItemEntity)
 
     if (orderItemEntity.product_sale.current_available == 0) {
       return ctx.badRequest('current_available is 0', {
@@ -47,7 +47,7 @@ export default factories.createCoreController('api::order-item.order-item', {
   },
 
   async decrement(ctx, next) {
-    console.log('decrement', ctx.params, ctx.request.body)
+    strapi.log.info('decrement', ctx.params, ctx.request.body)
     let orderItemId = ctx.params.id
     if (!orderItemId) {
       return ctx.badRequest('Missing or invalid id', {
@@ -58,7 +58,7 @@ export default factories.createCoreController('api::order-item.order-item', {
     const orderItemEntity = await strapi.db
       .query('api::order-item.order-item')
       .findOne({ where: { id: orderItemId }, populate: ['product_sale'] })
-    console.log('orderItemEntity', orderItemEntity)
+    strapi.log.info('orderItemEntity', orderItemEntity)
 
     if (orderItemEntity.quantity == 0) {
       return ctx.badRequest('quantity is already 0', {

@@ -92,7 +92,7 @@ export default {
   },
   methods: {
     async clientExist(shop: string, clientUsername: string): Promise<boolean> {
-      const url = `${this.$config.public.apiBaseUrl}/shops/${shop}/${clientUsername}`;
+      const url = `${this.$config.public.apiBaseUrl}/api/shops/${shop}/${clientUsername}`;
       try {
         let response = await fetch(url);
         this.$log().debug("clientExist", response);
@@ -107,7 +107,7 @@ export default {
       }
     },
     async getOrder(shop: string, clientUsername: string): Promise<Order> {
-      const url = `${this.$config.public.apiBaseUrl}/shops/${shop}/${clientUsername}/last-order`;
+      const url = `${this.$config.public.apiBaseUrl}/api/shops/${shop}/${clientUsername}/last-order`;
       let response = await fetch(url);
       let order_response: OrderDto = await response.json();
       this.$log().debug("getOrder", order_response);
