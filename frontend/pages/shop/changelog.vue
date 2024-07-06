@@ -24,6 +24,7 @@ export default {
         return {
             items: [{
                 date: "2024-07-06",
+                added: ["Aggiunta una nuova pagina in cui verranno annunciate nuove funzionalità e risoluzioni di problemi. Non è visibile ai clienti."],
                 fixed: ["Il menù non si chiudeva quando si sceglieva un opzione e bisognava premere la X manualmente."]
             }, {
                 date: "2024-07-05",
