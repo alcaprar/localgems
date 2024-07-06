@@ -9,27 +9,16 @@
           aria-labelledby="sidebarMenuLabel">
           <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="sidebarMenuLabel">Local Gems</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu"
-              aria-label="Close"></button>
+            <button type="button" id="close-sidebar" class="btn-close" data-bs-dismiss="offcanvas"
+              data-bs-target="#sidebarMenu" aria-label="Close"></button>
           </div>
           <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
             <ul class="nav flex-column">
-              <li class="nav-item">
-                <NuxtLink to="/shop/products" class="nav-link d-flex align-items-center gap-2 active"><i
-                    class="bi-house-fill"></i>
-
-                  Prodotti</NuxtLink>
-              </li>
-              <li class="nav-item">
-                <NuxtLink to="/shop/sales" class="nav-link d-flex align-items-center gap-2"><i class="bi-cart-fill"></i>
-                  Finestre di vendita</NuxtLink>
-              </li>
-              <li class="nav-item">
-                <NuxtLink to="/shop/clients" class="nav-link d-flex align-items-center gap-2"><i
-                    class="bi-people-fill"></i> Clienti</NuxtLink>
+              <li v-for="item in sidebarItems" :key="item.icon" class="nav-item">
+                <NuxtLink :to="item.to" v-on:click.native="closeSidebar"
+                  class="nav-link d-flex align-items-center gap-2"><i :class="item.icon"></i> {{ item.text }}</NuxtLink>
               </li>
             </ul>
-
             <hr class="my-3" />
           </div>
         </div>
@@ -43,11 +32,33 @@
 
 <script lang="ts">
 export default {
+  data() {
+    return {
+      sidebarItems: [{
+        to: "/shop/products",
+        icon: "bi-house-fill",
+        text: "Prodotti"
+      }, {
+        to: "/shop/sales",
+        icon: "bi-cart-fill",
+        text: "Finestre di vendita"
+      }, {
+        to: "/shop/clients",
+        icon: "bi-people-fill",
+        text: "Clienti"
+      }]
+    }
+  },
   computed: {
     loading: () => {
 
       let app = useNuxtApp();
       return app.$loader.isLoading()
+    }
+  },
+  methods: {
+    closeSidebar() {
+      document.getElementById('close-sidebar')?.click();
     }
   }
 }
