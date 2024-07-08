@@ -20,6 +20,9 @@
 <script>
 
 export default {
+    setup() {
+        definePageMeta({ layout: "admin" });
+    },
     data() {
         return {
             items: [{
