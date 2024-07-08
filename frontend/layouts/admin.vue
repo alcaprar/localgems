@@ -46,6 +46,10 @@ export default {
         to: "/shop/clients",
         icon: "bi-people-fill",
         text: "Clienti"
+      }, {
+        to: "/shop/changelog",
+        icon: "bi-journal-arrow-up",
+        text: "Lista Aggiornamenti"
       }]
     }
   },
