@@ -26,6 +26,9 @@ export default {
     data() {
         return {
             items: [{
+                date: "2024-07-11",
+                fixed: "Il pulsante per aggiungere nuovi prodotti è stato spostato in alto vicino alla scritta 'Prodotti'"
+            }, {
                 date: "2024-07-10",
                 added: ["Aggiunta pagina di login per gli utenti."]
             }, {
