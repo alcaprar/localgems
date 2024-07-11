@@ -27,8 +27,14 @@ export default {
         return {
             items: [{
                 date: "2024-07-11",
-                added: ["Quando una vendita è creata con successo viene mostrato un avviso."],
-                fixed: ["Il pulsante per aggiungere nuovi prodotti è stato spostato in alto vicino alla scritta 'Prodotti'."]
+                added: [
+                    "Quando una vendita è creata con successo viene mostrato un avviso.",
+                    "Quando si clicca/preme sulla riga di una vendita apre la pagina di dettaglio."
+                ],
+                fixed: [
+                    "Il pulsante per aggiungere nuovi prodotti è stato spostato in alto vicino alla scritta 'Prodotti'.",
+                    "Il pulsante per aggiungere nuove vendite è stato spostato in alto vicino alla scritta 'Finestre di vendita'."
+                ]
             }, {
                 date: "2024-07-10",
                 added: ["Aggiunta pagina di login per gli utenti."]
