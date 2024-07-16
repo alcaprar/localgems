@@ -13,13 +13,17 @@
     <table class="table table-striped table-sm">
       <thead>
         <tr>
-          <th>Prodotto</th>
-          <th>Prezzo</th>
-          <th>Quantità scelta</th>
+          <th style="width: 20%">Prodotto</th>
+          <th style="width: 20%">Prezzo</th>
+          <th style="width: 40%">Quantità scelta</th>
+          <th style="width: 10%">Quantità disponibile</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in order.items" :key="item.id">
+        <tr v-for="item in order.items" :key="item.id" :class="{
+          'sold-out': item.available_quantity == 0 &&
+            item.quantity == 0
+        }">
           <td>{{ item.name }}</td>
           <td>
             {{ formatAmountInMinor(item.price_per_unit_in_minor) }}€/{{
@@ -34,6 +38,9 @@
             <button class="btn btn-primary" :disabled="item.available_quantity == 0" @click="increment(item.id)">
               +
             </button>
+          </td>
+          <td>
+            {{ item.available_quantity == 0 ? "Terminato" : item.available_quantity }}
           </td>
         </tr>
       </tbody>
@@ -193,3 +200,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.sold-out {
+  text-decoration: line-through;
+}
+</style>
