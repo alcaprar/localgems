@@ -26,6 +26,11 @@ export default {
     data() {
         return {
             items: [{
+                date: "2024-07-17",
+                added: [
+                    "Quando il cliente non ha ordinato un prodotto e la quantità disponibile è zero viene mostrato come terminato e barrato."
+                ]
+            }, {
                 date: "2024-07-16",
                 added: [
                     "Basta premere invio per salvare prezzo e quantità nella pagina della vendita.",
