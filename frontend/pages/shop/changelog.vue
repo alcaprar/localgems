@@ -26,6 +26,12 @@ export default {
     data() {
         return {
             items: [{
+                date: "2024-07-16",
+                added: [
+                    "Basta premere invio per salvare prezzo e quantità nella pagina della vendita.",
+                    "Viene mostrata la conferma di modifica o un messaggio di errore in caso di errore quando si modifica prezzo e quantità nella pagina della vendita."
+                ]
+            }, {
                 date: "2024-07-11",
                 added: [
                     "Quando una vendita è creata con successo viene mostrato un avviso.",
