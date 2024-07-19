@@ -26,6 +26,11 @@ export default {
     data() {
         return {
             items: [{
+                date: "2024-07-19",
+                added: [
+                    "Aggiunto pulsante di conferma ordine nella pagina del cliente. Anche nella vista degli ordini è stata aggiunta una colonna che dice se l'ordine è stato confermato."
+                ]
+            }, {
                 date: "2024-07-17",
                 added: [
                     "Quando il cliente non ha ordinato un prodotto e la quantità disponibile è zero viene mostrato come terminato e barrato."
