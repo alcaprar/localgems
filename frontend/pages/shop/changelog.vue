@@ -28,7 +28,8 @@ export default {
             items: [{
                 date: "2024-07-19",
                 added: [
-                    "Aggiunto pulsante di conferma ordine nella pagina del cliente. Anche nella vista degli ordini è stata aggiunta una colonna che dice se l'ordine è stato confermato."
+                    "Aggiunto pulsante di conferma ordine nella pagina del cliente. Anche nella vista degli ordini è stata aggiunta una colonna che dice se l'ordine è stato confermato.",
+                    "Non far inviare gli ordini quando la finestra di vendita è chiusa."
                 ]
             }, {
                 date: "2024-07-17",
