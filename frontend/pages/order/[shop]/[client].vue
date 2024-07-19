@@ -1,16 +1,17 @@
 <template>
-  <div class="py-3 text-center">
+  <div class="preloader" v-if="saleClosed">
+    La finestra per ordinare non è aperta.
+    <br>
+    Se pensi che sia un errore contatta il venditore.
+  </div>
+  <div class="py-5 text-center">
     <h2>Pagina ordine #{{ order.id }}</h2>
     <p class="mt-2 text-lg text-gray-600">
-      Apertura: {{ order.sale.startDate.toLocaleString() }}. 
-      <br>
-      Chiusura: {{ order.sale.endDate.toLocaleString() }}
+      Apertura: {{ order.sale.startDate.toLocaleString() }}. Chiusura:
+      {{ order.sale.endDate.toLocaleString() }}
     </p>
-    <hr>
     <p class="mt-2 text-lg text-gray-600">
       Scegli quello che ti serve. Salva automaticamente.
-      <br>
-      Poi clicca "Conferma".
     </p>
   </div>
   <div class="table-responsive small">
@@ -51,20 +52,15 @@
     </table>
   </div>
   <hr />
-  <div class="row">
-    <div class="offset-8 col-4">
+  <div class="row mr-20">
+    <div class="d-flex flex-row-reverse">
       Totale: {{ formatAmountInMinor(calculateTotalInMinor()) }}€
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12 mx-2">
+    <div class="col-md-12">
       <textarea v-model="order.notes" placeholder="Lascia qui qualsiasi nota" rows="4" class="form-control"
         @keyup="onNotesChanges" />
-    </div>
-  </div>
-  <div class="row justify-content-center m-10">
-    <div class="col-4 mt-2">
-      <button class="btn btn-primary" @click="onConfirm">Conferma ordine</button>
     </div>
   </div>
 </template>
@@ -90,6 +86,7 @@ export default {
       items: [],
     };
     return {
+      saleClosed: true,
       order,
       timeout: -1,
     };
@@ -105,6 +102,9 @@ export default {
     }
     let order = await this.getOrder(shop, clientUsername);
     this.order = order;
+
+    const now = new Date();
+    this.saleClosed = now > this.order.sale.endDate || now < this.order.sale.startDate;
   },
   methods: {
     async clientExist(shop: string, clientUsername: string): Promise<boolean> {
@@ -128,13 +128,16 @@ export default {
       let order_response: OrderDto = await response.json();
       this.$log().debug("getOrder", order_response);
 
+      const startDate = new Date(order_response.sale.startDate);
+      const endDate = new Date(order_response.sale.endDate);
+
       return {
         id: order_response.id,
         notes: order_response.notes,
         sale: {
           id: order_response.sale.id.toString(),
-          startDate: new Date(order_response.sale.startDate),
-          endDate: new Date(order_response.sale.endDate),
+          startDate,
+          endDate,
         },
         items: order_response.order_items.map(
           (item: OrderItemDto): OrderItem => ({
@@ -161,14 +164,6 @@ export default {
         });
         this.$log().debug("onNotesChanges POST response", response);
       }, 1000);
-    },
-    async onConfirm() {
-      this.$log().debug("onConfirm",);
-      const url = `${this.$config.public.apiBaseUrl}/api/orders/${this.order.id}/confirm`;
-      let response = await fetch(url, {
-        method: "POST",
-      });
-      this.$log().debug("onConfirm POST response", response);
     },
     async increment(orderItemId: number) {
       this.$log().debug("increment", orderItemId);
@@ -219,6 +214,23 @@ export default {
 </script>
 
 <style>
+.preloader {
+  align-items: center;
+  text-align: center;
+  font-weight: bold;
+  font-size: large;
+  background: #dddddd;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+  opacity: 0.9;
+}
+
 .sold-out {
   text-decoration: line-through;
 }
