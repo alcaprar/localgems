@@ -697,6 +697,7 @@ export interface ApiOrderOrder extends Schema.CollectionType {
     sale: Attribute.Relation<'api::order.order', 'manyToOne', 'api::sale.sale'>
     order_items: Attribute.Relation<'api::order.order', 'oneToMany', 'api::order-item.order-item'>
     notes: Attribute.Text
+    last_confirmed_at: Attribute.DateTime
     createdAt: Attribute.DateTime
     updatedAt: Attribute.DateTime
     createdBy: Attribute.Relation<'api::order.order', 'oneToOne', 'admin::user'> & Attribute.Private

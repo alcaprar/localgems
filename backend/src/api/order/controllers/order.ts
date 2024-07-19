@@ -36,5 +36,20 @@ export default factories.createCoreController('api::order.order', {
     })
 
     return order
+  },
+  async confirm(ctx, next) {
+    strapi.log.info('confirm', ctx.params)
+    let orderId = ctx.params.id
+    if (!orderId) {
+      return ctx.badRequest('Missing or invalid id', { orderId })
+    }
+
+    let order = await strapi.entityService.update('api::order.order', orderId, {
+      data: {
+        last_confirmed_at: new Date()
+      }
+    })
+
+    return order
   }
 })

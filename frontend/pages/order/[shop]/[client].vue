@@ -1,12 +1,16 @@
 <template>
-  <div class="py-5 text-center">
+  <div class="py-3 text-center">
     <h2>Pagina ordine #{{ order.id }}</h2>
     <p class="mt-2 text-lg text-gray-600">
-      Apertura: {{ order.sale.startDate.toLocaleString() }}. Chiusura:
-      {{ order.sale.endDate.toLocaleString() }}
+      Apertura: {{ order.sale.startDate.toLocaleString() }}. 
+      <br>
+      Chiusura: {{ order.sale.endDate.toLocaleString() }}
     </p>
+    <hr>
     <p class="mt-2 text-lg text-gray-600">
       Scegli quello che ti serve. Salva automaticamente.
+      <br>
+      Poi clicca "Conferma".
     </p>
   </div>
   <div class="table-responsive small">
@@ -47,15 +51,20 @@
     </table>
   </div>
   <hr />
-  <div class="row mr-20">
-    <div class="d-flex flex-row-reverse">
+  <div class="row">
+    <div class="offset-8 col-4">
       Totale: {{ formatAmountInMinor(calculateTotalInMinor()) }}€
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 mx-2">
       <textarea v-model="order.notes" placeholder="Lascia qui qualsiasi nota" rows="4" class="form-control"
         @keyup="onNotesChanges" />
+    </div>
+  </div>
+  <div class="row justify-content-center m-10">
+    <div class="col-4 mt-2">
+      <button class="btn btn-primary" @click="onConfirm">Conferma ordine</button>
     </div>
   </div>
 </template>
@@ -152,6 +161,14 @@ export default {
         });
         this.$log().debug("onNotesChanges POST response", response);
       }, 1000);
+    },
+    async onConfirm() {
+      this.$log().debug("onConfirm",);
+      const url = `${this.$config.public.apiBaseUrl}/api/orders/${this.order.id}/confirm`;
+      let response = await fetch(url, {
+        method: "POST",
+      });
+      this.$log().debug("onConfirm POST response", response);
     },
     async increment(orderItemId: number) {
       this.$log().debug("increment", orderItemId);

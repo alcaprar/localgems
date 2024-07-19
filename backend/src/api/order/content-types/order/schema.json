@@ -31,6 +31,9 @@
     },
     "notes": {
       "type": "text"
+    },
+    "last_confirmed_at": {
+      "type": "datetime"
     }
   }
 }

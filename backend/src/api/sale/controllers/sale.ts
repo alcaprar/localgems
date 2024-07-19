@@ -99,6 +99,7 @@ export default factories.createCoreController('api::sale.sale', {
 
         let ordersWithOneItem = orders.filter((order) => {
             // returning only the orders that have at least one item
+            console.log("order", order.id);
             let order_items = order.order_items.filter((order_item) => {
                 // checking if there is at least one order item with quantity > 0
                 return order_item.quantity > 0

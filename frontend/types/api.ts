@@ -30,7 +30,8 @@ export interface OrderDto {
   notes: string;
   order_items: OrderItemDto[];
   sale: SaleDto;
-  client: ClientDto
+  client: ClientDto,
+  last_confirmed_at: Date
 }
 
 export interface OrderItemDto {
