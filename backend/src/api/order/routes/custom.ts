@@ -7,6 +7,14 @@ export default {
       config: {
         auth: false
       }
+    },
+    {
+      method: 'POST',
+      path: '/orders/:id/confirm',
+      handler: 'order.confirm',
+      config: {
+        auth: false
+      }
     }
   ]
 }

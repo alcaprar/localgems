@@ -75,12 +75,14 @@
             <tr>
               <th>Numero</th>
               <th>Cliente</th>
+              <th>Confermato?</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="order in orders" :key="order.id" @click="openOrderDetail(order.id)">
               <td>{{ order.id }}</td>
               <td>{{ order.client.name }}</td>
+              <td>{{ order.last_confirmed_at ? "🟢 SI" : "🔴 NO" }}</td>
             </tr>
           </tbody>
         </table>
@@ -157,7 +159,8 @@ export default {
               id: order.client.id,
               name: order.client.name
             },
-            items: []
+            items: [],
+            last_confirmed_at: order.last_confirmed_at
           }
         })
       }
