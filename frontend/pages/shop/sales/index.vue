@@ -62,7 +62,7 @@ export default {
             startDate: new Date(item.startDate),
             endDate: new Date(item.endDate),
           } as Sale;
-        });
+        }).reverse();
       } else {
         this.$toast.error("Error nel recuperare le vendite. Riprovare.")
       }
