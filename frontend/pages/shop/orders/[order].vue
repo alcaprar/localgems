@@ -5,6 +5,12 @@
     </div>
     <div class="table-responsive small">
         <h3>Spesa totale: {{ formatAmountInMinor(total) }}€</h3>
+        <div>
+            <h3>Note del cliente</h3>
+            <blockquote class="blockquote">
+                <p style="background-color:bisque;">{{ order.notes }}</p>
+            </blockquote>
+        </div>
         <table class="table table-striped table-sm">
             <thead>
                 <tr>
@@ -40,7 +46,8 @@ export default {
                 client: {
                     name: 'Client'
                 },
-                order_items: [] as OrderItemDto[]
+                order_items: [] as OrderItemDto[],
+                notes: ""
             }
         };
     },
@@ -60,7 +67,8 @@ export default {
                 client: result.val.client,
                 order_items: result.val.order_items.filter((item) => {
                     return item.quantity > 0
-                })
+                }),
+                notes: result.val.notes || "N/A"
             }
         }
         this.$loader.stopLoader();
