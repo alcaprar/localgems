@@ -21,15 +21,14 @@
       "target": "api::shop.shop",
       "inversedBy": "products"
     },
-    "unit": {
-      "type": "enumeration",
-      "enum": ["Hg", "Kg", "Piece"]
-    },
     "product_sales": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::product-sale.product-sale",
       "mappedBy": "product"
+    },
+    "unit": {
+      "type": "string"
     }
   }
 }

@@ -16,7 +16,7 @@
       <tbody>
         <tr v-for="product in products" :key="product.id">
           <td>{{ product.name }}</td>
-          <td>{{ formatUnitType(product.unit) }}</td>
+          <td>{{ product.unit }}</td>
           <td>
             <NuxtLink :to="`/shop/products/${product.id}`"><i class="bi-pencil-square" /></NuxtLink>
           </td>
@@ -51,16 +51,10 @@ export default {
         return {
           id: item.id || -1,
           name: item.name,
-          unit: UnitTypefromString(item.unit),
+          unit: item.unit,
         };
       });
     }
-  },
-  methods: {
-    formatUnitType(unit: UnitType): string {
-      this.$log().debug(unit);
-      return utils.formatUnitType(unit);
-    },
   },
 };
 </script>
