@@ -233,10 +233,27 @@ class OrdersClient {
         logger.warn("[ApiClient][Orders][updateNotes] error", response.text());
         return Err(ApiErrorVariant.NotFound)
       }
-      await response.json();
       return Ok(null)
     } catch (error) {
       logger.error("[ApiClient][Orders][updateNotes] error", error);
+      return Err(ApiErrorVariant.Generic)
+    }
+  }
+
+  async confirm(orderId: number): Promise<Result<null, ApiErrorVariant>> {
+    logger.debug("[ApiClient][Orders][confirm]", { orderId })
+    const url = `${this.baseUrl}/orders/${orderId}/confirm`;
+    try {
+      let response = await fetch(url, {
+        method: "POST"
+      });
+      if (response.status != 200) {
+        logger.warn("[ApiClient][Orders][confirm] error", response.text());
+        return Err(ApiErrorVariant.NotFound)
+      }
+      return Ok(null)
+    } catch (error) {
+      logger.error("[ApiClient][Orders][confirm] error", error);
       return Err(ApiErrorVariant.Generic)
     }
   }

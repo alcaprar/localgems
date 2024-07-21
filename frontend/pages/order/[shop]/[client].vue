@@ -61,6 +61,11 @@
         @keyup="onNotesChanges" />
     </div>
   </div>
+  <div class="row justify-content-center m-10">
+    <div class="col-4 mt-2">
+      <button class="btn btn-primary" @click="onConfirm">Conferma ordine</button>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -147,6 +152,16 @@ export default {
         await this.$backend.orders.updateNotes(this.order.id, this.order.notes);
         this.$loader.stopLoader();
       }, 1000);
+    },
+    async onConfirm() {
+      this.$loader.startLoader();
+      let result = await this.$backend.orders.confirm(this.order.id);
+      this.$loader.stopLoader();
+      if (result.ok) {
+        this.$toast.success("Ordine confermato con successo");
+      } else {
+        this.$toast.error("C'è stato un'errore nella conferma dell'ordine. Riprova o contattaci.")
+      }
     },
     async increment(orderItemId: number) {
       this.$loader.startLoader();
