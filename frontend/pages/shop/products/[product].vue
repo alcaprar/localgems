@@ -95,6 +95,7 @@ export default {
           name: this.product.name,
           unit: this.product.unit
         })
+        this.$toast.success("Prodotto aggiornato con successo");
         this.$loader.stopLoader();
       }
     }
