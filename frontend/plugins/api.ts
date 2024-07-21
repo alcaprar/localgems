@@ -98,7 +98,7 @@ class ClientsClient {
       let body = JSON.stringify({
         data: {
           username: client.username,
-          name: client.username,
+          name: client.name,
           shop: SHOP_ID
         },
       });
