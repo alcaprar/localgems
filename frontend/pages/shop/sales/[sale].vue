@@ -225,7 +225,7 @@ export default {
         this.$loader.stopLoader();
         if (result.ok) {
           this.$log().debug("Sale created, redirecting to the right url.")
-          this.$toast.error("Vendita creata con successo. Puoi aggiungere i prodotti ora.")
+          this.$toast.success("Vendita creata con successo. Puoi aggiungere i prodotti ora.")
           navigateTo(`/shop/sales/${result.val}`)
         } else {
           this.$toast.error("Errore nel creare la vendita.")
