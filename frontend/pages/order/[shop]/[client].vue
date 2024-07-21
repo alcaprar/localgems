@@ -75,6 +75,8 @@ import utils from "../../../utils";
 
 export default {
   data() {
+    const shopSlug = this.$route.params.shop as string;
+    const clientUsername = this.$route.params.client as string;
     let order: Order = {
       id: -1,
       sale: {
@@ -86,6 +88,8 @@ export default {
       items: [],
     };
     return {
+      shopSlug,
+      clientUsername,
       saleClosed: true,
       order,
       timeout: -1,
@@ -93,100 +97,74 @@ export default {
   },
   async created() {
     this.$loader.startLoader();
-    const shop = this.$route.params.shop as string;
-    const clientUsername = this.$route.params.client as string;
 
-    let result = await this.$backend.clients.get(shop, clientUsername);
+    let result = await this.$backend.clients.get(this.shopSlug, this.clientUsername);
     this.$loader.stopLoader();
     if (result.ok) {
-      this.$loader.startLoader();
-      let order = await this.getOrder(shop, clientUsername);
-      this.order = order;
-
-      const now = new Date();
-      this.saleClosed = now > this.order.sale.endDate || now < this.order.sale.startDate;
-      this.$loader.stopLoader();
-    } else {
-      this.$toast.error("Il cliente non esiste.");
-      navigateTo("/client-not-found");
+      if (result.ok) {
+        await this.refreshOrderData()
+      } else {
+        this.$toast.error("Il cliente non esiste.");
+        navigateTo("/client-not-found");
+      }
     }
   },
   methods: {
-    async getOrder(shop: string, clientUsername: string): Promise<Order> {
-      const url = `${this.$config.public.apiBaseUrl}/api/shops/${shop}/${clientUsername}/last-order`;
-      let response = await fetch(url);
-      let order_response: OrderDto = await response.json();
-      this.$log().debug("getOrder", order_response);
+    async refreshOrderData() {
+      this.$loader.startLoader();
+      let result = await this.$backend.orders.lastOrder(this.shopSlug, this.clientUsername);
+      if (result.ok) {
+        let order = result.val;
+        const startDate = new Date(order.sale.startDate);
+        const endDate = new Date(order.sale.endDate);
 
-      const startDate = new Date(order_response.sale.startDate);
-      const endDate = new Date(order_response.sale.endDate);
-
-      return {
-        id: order_response.id,
-        notes: order_response.notes,
-        sale: {
-          id: order_response.sale.id.toString(),
-          startDate,
-          endDate,
-        },
-        items: order_response.order_items.map(
-          (item: OrderItemDto): OrderItem => ({
-            id: item.id,
-            name: item.product_sale.product.name,
-            price_per_unit_in_minor: item.product_sale.amount_in_minor,
-            quantity: item.quantity,
-            available_quantity: item.product_sale.current_available,
-            unit: UnitTypefromString(item.product_sale.product.unit),
-          })
-        ),
-      };
+        this.order = {
+          id: order.id,
+          notes: order.notes,
+          sale: {
+            id: order.sale.id.toString(),
+            startDate,
+            endDate,
+          },
+          items: order.order_items.map(
+            (item: OrderItemDto): OrderItem => ({
+              id: item.id,
+              name: item.product_sale.product.name,
+              price_per_unit_in_minor: item.product_sale.amount_in_minor,
+              quantity: item.quantity,
+              available_quantity: item.product_sale.current_available,
+              unit: UnitTypefromString(item.product_sale.product.unit),
+            })
+          ),
+        };
+        const now = new Date();
+        this.saleClosed = now > this.order.sale.endDate || now < this.order.sale.startDate;
+      } else {
+        this.$toast.error("Impossibile recuperare i dettagli dell'ordine.")
+      }
+      this.$loader.stopLoader();
     },
     onNotesChanges() {
       if (this.timeout) clearTimeout(this.timeout);
       this.timeout = window.setTimeout(async () => {
-        this.$log().debug("onNotesChanges", this.order.notes);
-        const url = `${this.$config.public.apiBaseUrl}/api/orders/${this.order.id}/notes`;
-        let response = await fetch(url, {
-          method: "POST",
-          body: JSON.stringify({
-            notes: this.order.notes,
-          }),
-        });
-        this.$log().debug("onNotesChanges POST response", response);
+        this.$loader.startLoader();
+        await this.$backend.orders.updateNotes(this.order.id, this.order.notes);
+        this.$loader.stopLoader();
       }, 1000);
     },
     async increment(orderItemId: number) {
-      this.$log().debug("increment", orderItemId);
-
-      const url = `${this.$config.public.apiBaseUrl}/api/order-items/${orderItemId}/increment`;
-      let response = await fetch(url, {
-        method: "POST",
-      });
-      this.$log().debug("increment POST response", response);
-      if (response.ok) {
-        const shop = this.$route.params.shop as string;
-        const clientUsername = this.$route.params.client as string;
-        let order = await this.getOrder(shop, clientUsername);
-        this.order = order;
-      }
+      this.$loader.startLoader();
+      await this.$backend.orders.increment(orderItemId);
+      await this.refreshOrderData();
+      this.$loader.stopLoader();
     },
     async decrement(orderItemId: number) {
-      this.$log().debug("decrement", orderItemId);
-
-      const url = `${this.$config.public.apiBaseUrl}/api/order-items/${orderItemId}/decrement`;
-      let response = await fetch(url, {
-        method: "POST",
-      });
-      this.$log().debug("decrement POST response", response);
-      if (response.ok) {
-        const shop = this.$route.params.shop as string;
-        const clientUsername = this.$route.params.client as string;
-        let order = await this.getOrder(shop, clientUsername);
-        this.order = order;
-      }
+      this.$loader.startLoader();
+      await this.$backend.orders.decrement(orderItemId);
+      await this.refreshOrderData();
+      this.$loader.stopLoader();
     },
     formatUnitType(unit: UnitType): string {
-      this.$log().debug(unit);
       return utils.formatUnitType(unit);
     },
     formatAmountInMinor(amount: number): number {

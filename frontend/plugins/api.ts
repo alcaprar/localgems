@@ -137,6 +137,84 @@ class OrdersClient {
     this.baseUrl = baseUrl
   }
 
+  async lastOrder(shopSlug: string, clientUsername: string): Promise<Result<OrderDto, ApiErrorVariant>> {
+    logger.debug("[ApiClient][Orders][lastOrder]", { shopSlug, clientUsername })
+    const url = `${this.baseUrl}/shops/${shopSlug}/${clientUsername}/last-order`;
+    try {
+      let response = await fetch(url);
+      if (response.status == 404) {
+        logger.warn("[ApiClient][Orders][lastOrder] not found");
+        return Err(ApiErrorVariant.NotFound)
+      }
+      let result: OrderDto = await response.json();
+      logger.debug("[ApiClient][Orders][lastOrder] result", result);
+      return Ok(result)
+    } catch (error) {
+      logger.error("[ApiClient][Orders][lastOrder] error", error);
+      return Err(ApiErrorVariant.Generic)
+    }
+  }
+
+  async updateNotes(orderId: number, notes: string): Promise<Result<null, ApiErrorVariant>> {
+    logger.debug("[ApiClient][Orders][updateNotes]", { orderId, notes })
+    const url = `${this.baseUrl}/orders/${orderId}/notes`;
+    try {
+      let response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          notes: notes,
+        }),
+      });
+      if (response.status != 200) {
+        logger.warn("[ApiClient][Orders][updateNotes] error", response.text());
+        return Err(ApiErrorVariant.NotFound)
+      }
+      await response.json();
+      return Ok(null)
+    } catch (error) {
+      logger.error("[ApiClient][Orders][updateNotes] error", error);
+      return Err(ApiErrorVariant.Generic)
+    }
+  }
+
+  async increment(orderItemId: number): Promise<Result<null, ApiErrorVariant>> {
+    logger.debug("[ApiClient][Orders][increment]", { orderItemId })
+    const url = `${this.baseUrl}/order-items/${orderItemId}/increment`;
+    try {
+      let response = await fetch(url, {
+        method: "POST",
+      });
+      if (response.status != 200) {
+        logger.warn("[ApiClient][Orders][increment] error", response.text());
+        return Err(ApiErrorVariant.NotFound)
+      }
+      await response.json();
+      return Ok(null)
+    } catch (error) {
+      logger.error("[ApiClient][Orders][increment] error", error);
+      return Err(ApiErrorVariant.Generic)
+    }
+  }
+
+  async decrement(orderItemId: number): Promise<Result<null, ApiErrorVariant>> {
+    logger.debug("[ApiClient][Orders][decrement]", { orderItemId })
+    const url = `${this.baseUrl}/order-items/${orderItemId}/decrement`;
+    try {
+      let response = await fetch(url, {
+        method: "POST",
+      });
+      if (response.status != 200) {
+        logger.warn("[ApiClient][Orders][decrement] error", response.text());
+        return Err(ApiErrorVariant.NotFound)
+      }
+      await response.json();
+      return Ok(null)
+    } catch (error) {
+      logger.error("[ApiClient][Orders][decrement] error", error);
+      return Err(ApiErrorVariant.Generic)
+    }
+  }
+
   async get(orderId: number): Promise<Result<OrderDto, ApiErrorVariant>> {
     logger.debug("[ApiClient][Orders][get] orderId", orderId)
     const url = `${this.baseUrl}/orders/${orderId}`;
