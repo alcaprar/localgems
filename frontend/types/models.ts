@@ -42,6 +42,10 @@ export interface Product {
   unit: UnitType;
 }
 
+export interface Unit {
+  id: number,
+  name: string
+}
 export enum UnitType {
   Piece,
   Kilogram,

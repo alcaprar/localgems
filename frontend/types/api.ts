@@ -73,3 +73,8 @@ export interface ShopDto {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface UnitDto {
+  id?: number,
+  name: string
+}

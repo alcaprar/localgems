@@ -59,6 +59,10 @@ export default {
         icon: "bi-people-fill",
         text: "Clienti"
       }, {
+        to: "/shop/units",
+        icon: "bi-people-fill",
+        text: "Unità"
+      }, {
         to: "/shop/changelog",
         icon: "bi-journal-arrow-up",
         text: "Lista Aggiornamenti"

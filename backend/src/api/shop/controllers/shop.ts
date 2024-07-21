@@ -131,5 +131,41 @@ export default factories.createCoreController('api::shop.shop', {
     strapi.log.info('saleEntities', saleEntities)
 
     return saleEntities
-  }
+  },
+  async addUnit(ctx, next) {
+    const shop = ctx.params.shop;
+    let unitName = ctx.request.body.data.name || '';
+    strapi.log.info({ shop, unitName });
+
+    if (unitName == "") {
+      return ctx.badRequest('Unit is empty', { shop })
+    }
+
+    const unitEntity = await strapi.entityService.create('api::unit.unit', {
+      data: {
+        shop,
+        name: unitName
+      }
+    });
+
+    return unitEntity
+  },
+  async units(ctx, next) {
+    const shop = ctx.params.shop
+    strapi.log.info({ shop })
+
+    const shopEntity = await strapi.db.query('api::shop.shop').findOne({ where: { id: shop } })
+    strapi.log.info('shopEntity', shopEntity)
+
+    if (!shopEntity) {
+      return ctx.badRequest('Shop not found', { shop })
+    }
+
+    const unitEntities = await strapi.db
+      .query('api::unit.unit')
+      .findMany({ where: { shop } })
+    strapi.log.info('unitEntities', unitEntities)
+
+    return unitEntities
+  },
 })
