@@ -26,6 +26,22 @@ export default {
     },
     {
       method: 'GET',
+      path: '/shops/:shop/units',
+      handler: 'shop.units',
+      config: {
+        auth: false
+      }
+    },
+    {
+      method: 'POST',
+      path: '/shops/:shop/units',
+      handler: 'shop.addUnit',
+      config: {
+        auth: false
+      }
+    },
+    {
+      method: 'GET',
       path: '/shops/:shopSlug/:clientUsername',
       handler: 'shop.client',
       config: {

@@ -1,5 +1,6 @@
 import { pino, type Logger } from "pino";
 import { Ok, Err, Result } from 'ts-results';
+import type { UnitDto } from "~/types/api";
 
 export default defineNuxtPlugin((nuxtApp) => {
   console.log('[plugins][api] $config:', nuxtApp.$config)
@@ -22,6 +23,7 @@ class ApiClient {
   orders: OrdersClient
   products: ProductsClient
   sales: SalesClient
+  units: UnitsClient
 
   constructor(
     baseUrl: string,
@@ -31,6 +33,7 @@ class ApiClient {
     this.orders = new OrdersClient(this.baseUrl)
     this.products = new ProductsClient(this.baseUrl)
     this.sales = new SalesClient(this.baseUrl)
+    this.units = new UnitsClient(this.baseUrl)
   }
 
   getBaseUrl(): string {
@@ -126,6 +129,67 @@ class ClientsClient {
 }
 
 
+class UnitsClient {
+  baseUrl: string
+
+  constructor(
+    baseUrl: string,
+  ) {
+    this.baseUrl = baseUrl
+  }
+
+  async getAll(): Promise<Result<UnitDto[], ApiErrorVariant>> {
+    logger.debug("[ApiClient][Units][getAll]",);
+    const url = `${this.baseUrl}/shops/${SHOP_ID}/units`;
+    try {
+      let response = await fetch(url);
+      if (response.status == 404) {
+        logger.warn("[ApiClient][Units][getAll] not found")
+        return Err(ApiErrorVariant.NotFound)
+      }
+      let result: UnitDto[] = await response.json();
+      logger.debug("[ApiClient][Units][getAll] result", result);
+      return Ok(result)
+    } catch (error) {
+      logger.error("[ApiClient][Units][getAll] Error", error)
+      return Err(ApiErrorVariant.Generic)
+    }
+  }
+
+  async create(unit: UnitDto): Promise<Result<number, ApiErrorVariant>> {
+    logger.debug("[ApiClient][Units][create]", { unit })
+    const url = `${this.baseUrl}/shops/${SHOP_ID}/units`;
+    try {
+      let body = JSON.stringify({
+        data: {
+          name: unit.name,
+        },
+      });
+      logger.debug("[ApiClient][Units][create] body", body)
+      let response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body
+      });
+      if (response.status == 404) {
+        return Err(ApiErrorVariant.NotFound)
+      }
+      logger.debug("[ApiClient][Units][create] response", response)
+      let result = (await response.json());
+      logger.debug("[ApiClient][Units][create] result", result);
+      if (result.id != null) {
+        return Ok(result.id)
+      } else {
+        return Err(ApiErrorVariant.Generic)
+      }
+    } catch (error) {
+      logger.error("[ApiClient][Units][create] Error", error)
+      return Err(ApiErrorVariant.Generic)
+    }
+  }
+}
 
 
 class OrdersClient {

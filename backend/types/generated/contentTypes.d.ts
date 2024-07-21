@@ -843,10 +843,32 @@ export interface ApiShopShop extends Schema.CollectionType {
     owner: Attribute.Relation<'api::shop.shop', 'oneToOne', 'plugin::users-permissions.user'>
     slug: Attribute.String & Attribute.Unique
     sales: Attribute.Relation<'api::shop.shop', 'oneToMany', 'api::sale.sale'>
+    units: Attribute.Relation<'api::shop.shop', 'oneToMany', 'api::unit.unit'>
     createdAt: Attribute.DateTime
     updatedAt: Attribute.DateTime
     createdBy: Attribute.Relation<'api::shop.shop', 'oneToOne', 'admin::user'> & Attribute.Private
     updatedBy: Attribute.Relation<'api::shop.shop', 'oneToOne', 'admin::user'> & Attribute.Private
+  }
+}
+
+export interface ApiUnitUnit extends Schema.CollectionType {
+  collectionName: 'units'
+  info: {
+    singularName: 'unit'
+    pluralName: 'units'
+    displayName: 'Unit'
+    description: ''
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    name: Attribute.String
+    shop: Attribute.Relation<'api::unit.unit', 'manyToOne', 'api::shop.shop'>
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<'api::unit.unit', 'oneToOne', 'admin::user'> & Attribute.Private
+    updatedBy: Attribute.Relation<'api::unit.unit', 'oneToOne', 'admin::user'> & Attribute.Private
   }
 }
 
@@ -875,6 +897,7 @@ declare module '@strapi/types' {
       'api::product-sale.product-sale': ApiProductSaleProductSale
       'api::sale.sale': ApiSaleSale
       'api::shop.shop': ApiShopShop
+      'api::unit.unit': ApiUnitUnit
     }
   }
 }
