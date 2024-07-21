@@ -88,6 +88,7 @@ export default {
             }
         },
         async addClient() {
+            this.$loader.startLoader();
             this.$log().info("[pages][clients][addClient]");
             let result = await this.$backend.clients.create({
                 name: this.client.name,
