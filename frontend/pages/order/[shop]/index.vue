@@ -37,19 +37,8 @@ export default {
             }
         },
         async clientExist(clientUsername: string): Promise<boolean> {
-            const url = `${this.$config.public.apiBaseUrl}/api/shops/${this.shopSlug}/${clientUsername}`;
-            try {
-                let response = await fetch(url);
-                this.$log().debug("clientExist", response);
-                if (response.status !== 200) {
-                    return false;
-                } else {
-                    return true;
-                }
-            } catch (error) {
-                this.$log().error("Error when calling API", error);
-                return false;
-            }
+            let result = await this.$backend.clients.get(this.shopSlug, clientUsername);
+            return result.ok
         },
     }
 }

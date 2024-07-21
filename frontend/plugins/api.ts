@@ -47,6 +47,29 @@ class ClientsClient {
     this.baseUrl = baseUrl
   }
 
+
+  async get(shopSlug: string, clientUsername: string): Promise<Result<ClientDto, ApiErrorVariant>> {
+    logger.debug("[ApiClient][Clients][get]",);
+    const url = `${this.baseUrl}/shops/${shopSlug}/${clientUsername}`;
+    try {
+      let response = await fetch(url);
+      if (response.status == 404) {
+        logger.warn("[ApiClient][Clients][get] not found")
+        return Err(ApiErrorVariant.NotFound)
+      } else if (response.status == 200) {
+        let result: ClientDto = (await response.json()).data;
+        logger.debug("[ApiClient][Clients][get] result", result);
+        return Ok(result)
+      } else {
+        logger.error("[ApiClient][Clients][get] Error", await response.text())
+        return Err(ApiErrorVariant.Generic)
+      }
+    } catch (error) {
+      logger.error("[ApiClient][Clients][get] Error", error)
+      return Err(ApiErrorVariant.Generic)
+    }
+  }
+
   async getAll(): Promise<Result<ClientDto[], ApiErrorVariant>> {
     logger.debug("[ApiClient][Clients][getAll]",);
     const url = `${this.baseUrl}/shops/${SHOP_ID}/clients`;

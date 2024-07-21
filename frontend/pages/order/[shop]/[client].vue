@@ -92,36 +92,26 @@ export default {
     };
   },
   async created() {
-    this.$log().debug("created");
+    this.$loader.startLoader();
     const shop = this.$route.params.shop as string;
     const clientUsername = this.$route.params.client as string;
-    this.$log().debug("[create] params", { shop, clientUsername });
-    if (!(await this.clientExist(shop, clientUsername))) {
-      this.$log().info("client does not exist");
+
+    let result = await this.$backend.clients.get(shop, clientUsername);
+    this.$loader.stopLoader();
+    if (result.ok) {
+      this.$loader.startLoader();
+      let order = await this.getOrder(shop, clientUsername);
+      this.order = order;
+
+      const now = new Date();
+      this.saleClosed = now > this.order.sale.endDate || now < this.order.sale.startDate;
+      this.$loader.stopLoader();
+    } else {
+      this.$toast.error("Il cliente non esiste.");
       navigateTo("/client-not-found");
     }
-    let order = await this.getOrder(shop, clientUsername);
-    this.order = order;
-
-    const now = new Date();
-    this.saleClosed = now > this.order.sale.endDate || now < this.order.sale.startDate;
   },
   methods: {
-    async clientExist(shop: string, clientUsername: string): Promise<boolean> {
-      const url = `${this.$config.public.apiBaseUrl}/api/shops/${shop}/${clientUsername}`;
-      try {
-        let response = await fetch(url);
-        this.$log().debug("clientExist", response);
-        if (response.status !== 200) {
-          return false;
-        } else {
-          return true;
-        }
-      } catch (error) {
-        this.$log().error("Error when calling API", error);
-        return false;
-      }
-    },
     async getOrder(shop: string, clientUsername: string): Promise<Order> {
       const url = `${this.$config.public.apiBaseUrl}/api/shops/${shop}/${clientUsername}/last-order`;
       let response = await fetch(url);

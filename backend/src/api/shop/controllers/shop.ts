@@ -6,24 +6,27 @@ import { factories } from '@strapi/strapi'
 import sale from '../../sale/controllers/sale'
 
 export default factories.createCoreController('api::shop.shop', {
-  async checkClient(ctx, next) {
-    strapi.log.info('checkClient', ctx.params)
+  async client(ctx, next) {
+    const shopSlug = ctx.params.shopSlug;
+    const clientUsername = ctx.params.clientUsername;
+
+    strapi.log.info('[shop][client]', { shopSlug, clientUsername })
     const shopEntity = await strapi.db
       .query('api::shop.shop')
-      .findOne({ where: { slug: ctx.params.shop } })
-    strapi.log.info('shopEntity', shopEntity)
+      .findOne({ where: { slug: shopSlug } })
+    strapi.log.info('[shop][client] shopEntity', shopEntity)
 
     if (!shopEntity) {
-      return ctx.badRequest('Shop not found', { shop: ctx.params.shop })
+      return ctx.badRequest('Shop not found', { shopSlug })
     }
 
     const clientEntity = await strapi.db
       .query('api::client.client')
-      .findOne({ where: { shop: shopEntity.id, username: ctx.params.client } })
-    strapi.log.info('clientEntity', clientEntity)
+      .findOne({ where: { shop: shopEntity.id, username: clientUsername } })
+    strapi.log.info('[shop][client] clientEntity', clientEntity)
 
     if (!clientEntity) {
-      return ctx.badRequest('Client not found', { client: ctx.params.client })
+      return ctx.notFound('Client not found', { shop: shopSlug, client: clientUsername })
     }
 
     return clientEntity;

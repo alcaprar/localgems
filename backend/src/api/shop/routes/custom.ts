@@ -26,8 +26,8 @@ export default {
     },
     {
       method: 'GET',
-      path: '/shops/:shop/:client',
-      handler: 'shop.checkClient',
+      path: '/shops/:shopSlug/:clientUsername',
+      handler: 'shop.client',
       config: {
         auth: false
       }
