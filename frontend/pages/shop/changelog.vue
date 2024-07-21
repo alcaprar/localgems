@@ -26,6 +26,11 @@ export default {
     data() {
         return {
             items: [{
+                date: "2024-07-21",
+                added: [
+                    "Possibilità di definire qualsiasi tipo di unità da usare con i prodotti."
+                ]
+            }, {
                 date: "2024-07-19",
                 added: [
                     "Aggiunto pulsante di conferma ordine nella pagina del cliente. Anche nella vista degli ordini è stata aggiunta una colonna che dice se l'ordine è stato confermato.",
