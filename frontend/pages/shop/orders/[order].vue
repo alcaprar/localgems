@@ -40,7 +40,7 @@ export default {
                 client: {
                     name: 'Client'
                 },
-                order_items: []
+                order_items: [] as OrderItemDto[]
             }
         };
     },
@@ -55,7 +55,13 @@ export default {
         this.$loader.startLoader();
         let result = await this.$backend.orders.get(Number(this.orderId));
         if (result.ok) {
-            this.order = result.val
+            this.order = {
+                id: result.val.id,
+                client: result.val.client,
+                order_items: result.val.order_items.filter((item) => {
+                    return item.quantity > 0
+                })
+            }
         }
         this.$loader.stopLoader();
     },
