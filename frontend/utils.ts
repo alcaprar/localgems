@@ -1,16 +1,4 @@
 export default {
-  formatUnitType(unit: UnitType): string {
-    switch (unit) {
-      case UnitType.Kilogram:
-        return "kg";
-      case UnitType.Piece:
-        return "pezzo";
-      case UnitType.Hectogram:
-        return "hg";
-      default:
-        return "";
-    }
-  },
   formatAmountInMinor(amount: number): number {
     return amount / 100;
   },

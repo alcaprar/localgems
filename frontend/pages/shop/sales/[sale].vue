@@ -191,7 +191,7 @@ export default {
                 product: {
                   id: item.product.id || -1,
                   name: item.product.name,
-                  unit: UnitTypefromString(item.product.unit)
+                  unit: item.product.unit
                 }
               }
             })

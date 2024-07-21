@@ -16,7 +16,7 @@ export interface OrderItem {
   id: number;
   name: string;
   available_quantity: number;
-  unit: UnitType;
+  unit: string;
   price_per_unit_in_minor: number;
   quantity: number;
 }
@@ -39,42 +39,10 @@ export interface ProductSale {
 export interface Product {
   id: number;
   name: string;
-  unit: UnitType;
+  unit: string;
 }
 
 export interface Unit {
   id: number,
   name: string
-}
-export enum UnitType {
-  Piece,
-  Kilogram,
-  Hectogram,
-  Unknown,
-}
-
-export function UnitTypefromString(unit: string): UnitType {
-  switch (unit) {
-    case "Piece":
-      return UnitType.Piece;
-    case "Kg":
-      return UnitType.Kilogram;
-    case "Hg":
-      return UnitType.Hectogram;
-    default:
-      return UnitType.Unknown;
-  }
-}
-
-export function UnitTypetoString(unit: UnitType): string {
-  switch (unit) {
-    case UnitType.Piece:
-      return "Piece";
-    case UnitType.Kilogram:
-      return "Kg";
-    case UnitType.Hectogram:
-      return "Hg";
-    default:
-      return "";
-  }
 }

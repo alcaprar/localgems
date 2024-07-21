@@ -747,12 +747,12 @@ export interface ApiProductProduct extends Schema.CollectionType {
   attributes: {
     name: Attribute.String
     shop: Attribute.Relation<'api::product.product', 'manyToOne', 'api::shop.shop'>
-    unit: Attribute.Enumeration<['Hg', 'Kg', 'Piece']>
     product_sales: Attribute.Relation<
       'api::product.product',
       'oneToMany',
       'api::product-sale.product-sale'
     >
+    unit: Attribute.String
     createdAt: Attribute.DateTime
     updatedAt: Attribute.DateTime
     createdBy: Attribute.Relation<'api::product.product', 'oneToOne', 'admin::user'> &

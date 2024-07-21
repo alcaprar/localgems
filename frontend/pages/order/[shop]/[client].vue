@@ -31,15 +31,13 @@
         }">
           <td>{{ item.name }}</td>
           <td>
-            {{ formatAmountInMinor(item.price_per_unit_in_minor) }}€/{{
-              formatUnitType(item.unit)
-            }}
+            {{ formatAmountInMinor(item.price_per_unit_in_minor) }}€/{{ item.unit }}
           </td>
           <td>
             <button class="btn btn-primary" :disabled="item.quantity == 0" @click="decrement(item.id)">
               -
             </button>
-            {{ item.quantity }} {{ formatUnitType(item.unit) }}
+            {{ item.quantity }} {{ item.unit }}
             <button class="btn btn-primary" :disabled="item.available_quantity == 0" @click="increment(item.id)">
               +
             </button>
@@ -66,9 +64,7 @@
 </template>
 
 <script lang="ts">
-import { UnitType, type Order, type OrderItem } from "../../../types/models";
-import { UnitTypefromString } from "../../../types/models";
-
+import { type Order, type OrderItem } from "../../../types/models";
 import type { OrderDto, OrderItemDto } from "../../../types/api";
 
 import utils from "../../../utils";
@@ -133,7 +129,7 @@ export default {
               price_per_unit_in_minor: item.product_sale.amount_in_minor,
               quantity: item.quantity,
               available_quantity: item.product_sale.current_available,
-              unit: UnitTypefromString(item.product_sale.product.unit),
+              unit: item.product_sale.product.unit,
             })
           ),
         };
@@ -163,9 +159,6 @@ export default {
       await this.$backend.orders.decrement(orderItemId);
       await this.refreshOrderData();
       this.$loader.stopLoader();
-    },
-    formatUnitType(unit: UnitType): string {
-      return utils.formatUnitType(unit);
     },
     formatAmountInMinor(amount: number): number {
       return utils.formatAmountInMinor(amount);
