@@ -5,7 +5,7 @@
             <p class="lead">Inserisci il nome utente che ti è stato dato e premi invio. Se è corretto si aprirà la
                 pagina dell'ordine.</p>
             <p class="lead">
-                <input class="mb-3" style="width: 100%;" type="text" v-model="username">
+                <input class="mb-3" style="width: 100%;" type="text" v-model="username" @keyup.enter="onEnterClicked">
                 <button class="btn btn-lg btn-secondary" @click="goToOrderClicked">Vai all'ordine</button>
             </p>
         </main>
@@ -25,12 +25,18 @@ export default {
     },
     created() {
         this.$loader.startLoader();
-        // load shop info
+        // TODO load shop info
         this.$loader.stopLoader();
     },
     methods: {
+        async onEnterClicked() {
+            await this.tryGoToOrderPage()
+        },
         async goToOrderClicked() {
-            if (await this.clientExist(this.username)) {
+            await this.tryGoToOrderPage()
+        },
+        async tryGoToOrderPage() {
+            if (await this.clientExist(this.username.toLowerCase())) {
                 navigateTo(`/order/${this.shopSlug}/${this.username}`)
             } else {
                 this.$toast.error("Il nome utente non è corretto, riprova. Se l'errore persiste contattaci.")

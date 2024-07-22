@@ -26,6 +26,11 @@ export default {
     data() {
         return {
             items: [{
+                date: "2024-07-22",
+                fixed: [
+                    "Nella pagina di ingresso agli ordini, non fa più differenza se è maiuscolo o no lo username dei clienti."
+                ]
+            }, {
                 date: "2024-07-21",
                 added: [
                     "Possibilità di definire qualsiasi tipo di unità da usare con i prodotti."
