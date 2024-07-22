@@ -36,8 +36,9 @@ export default {
             await this.tryGoToOrderPage()
         },
         async tryGoToOrderPage() {
-            if (await this.clientExist(this.username.toLowerCase())) {
-                navigateTo(`/order/${this.shopSlug}/${this.username}`)
+            let username = this.username.toLowerCase()
+            if (await this.clientExist(username)) {
+                navigateTo(`/order/${this.shopSlug}/${username}`)
             } else {
                 this.$toast.error("Il nome utente non è corretto, riprova. Se l'errore persiste contattaci.")
             }
