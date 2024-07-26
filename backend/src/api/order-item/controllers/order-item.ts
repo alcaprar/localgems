@@ -14,36 +14,41 @@ export default factories.createCoreController('api::order-item.order-item', {
       })
     }
 
-    const orderItemEntity = await strapi.db
-      .query('api::order-item.order-item')
-      .findOne({ where: { id: orderItemId }, populate: ['product_sale'] })
-    strapi.log.info('orderItemEntity', orderItemEntity)
 
-    if (orderItemEntity.product_sale.current_available == 0) {
-      return ctx.badRequest('current_available is 0', {
-        product_sale: orderItemEntity.product_sale
+    return await strapi.db.transaction(async ({ trx, rollback, commit, onCommit, onRollback }) => {
+      const orderItemEntity = await strapi.db
+        .query('api::order-item.order-item')
+        .findOne({ where: { id: orderItemId }, populate: ['product_sale'] })
+      strapi.log.info('orderItemEntity', orderItemEntity)
+
+      if (orderItemEntity.product_sale.current_available == 0) {
+        return ctx.badRequest('current_available is 0', {
+          product_sale: orderItemEntity.product_sale
+        })
+      }
+
+      let orderItem = await strapi.entityService.update('api::order-item.order-item', orderItemId, {
+        data: {
+          quantity: orderItemEntity.quantity + 1
+        }
       })
-    }
+      let productSale = await strapi.entityService.update(
+        'api::product-sale.product-sale',
+        orderItemEntity.product_sale.id,
+        {
+          data: {
+            current_available: orderItemEntity.product_sale.current_available - 1
+          }
+        }
+      )
 
-    let orderItem = await strapi.entityService.update('api::order-item.order-item', orderItemId, {
-      data: {
-        quantity: orderItemEntity.quantity + 1
+      await commit();
+
+      return {
+        orderItem,
+        productSale
       }
     })
-    let productSale = await strapi.entityService.update(
-      'api::product-sale.product-sale',
-      orderItemEntity.product_sale.id,
-      {
-        data: {
-          current_available: orderItemEntity.product_sale.current_available - 1
-        }
-      }
-    )
-
-    return {
-      orderItem,
-      productSale
-    }
   },
 
   async decrement(ctx, next) {
@@ -55,35 +60,39 @@ export default factories.createCoreController('api::order-item.order-item', {
       })
     }
 
-    const orderItemEntity = await strapi.db
-      .query('api::order-item.order-item')
-      .findOne({ where: { id: orderItemId }, populate: ['product_sale'] })
-    strapi.log.info('orderItemEntity', orderItemEntity)
+    return await strapi.db.transaction(async ({ trx, rollback, commit, onCommit, onRollback }) => {
+      const orderItemEntity = await strapi.db
+        .query('api::order-item.order-item')
+        .findOne({ where: { id: orderItemId }, populate: ['product_sale'] })
+      strapi.log.info('orderItemEntity', orderItemEntity)
 
-    if (orderItemEntity.quantity == 0) {
-      return ctx.badRequest('quantity is already 0', {
-        order_item: orderItemEntity
+      if (orderItemEntity.quantity == 0) {
+        return ctx.badRequest('quantity is already 0', {
+          order_item: orderItemEntity
+        })
+      }
+
+      let orderItem = await strapi.entityService.update('api::order-item.order-item', orderItemId, {
+        data: {
+          quantity: orderItemEntity.quantity - 1
+        }
       })
-    }
+      let productSale = await strapi.entityService.update(
+        'api::product-sale.product-sale',
+        orderItemEntity.product_sale.id,
+        {
+          data: {
+            current_available: orderItemEntity.product_sale.current_available + 1
+          }
+        }
+      )
 
-    let orderItem = await strapi.entityService.update('api::order-item.order-item', orderItemId, {
-      data: {
-        quantity: orderItemEntity.quantity - 1
+      await commit();
+
+      return {
+        orderItem,
+        productSale
       }
     })
-    let productSale = await strapi.entityService.update(
-      'api::product-sale.product-sale',
-      orderItemEntity.product_sale.id,
-      {
-        data: {
-          current_available: orderItemEntity.product_sale.current_available + 1
-        }
-      }
-    )
-
-    return {
-      orderItem,
-      productSale
-    }
   }
 })

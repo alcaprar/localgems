@@ -141,14 +141,19 @@ export default factories.createCoreController('api::shop.shop', {
       return ctx.badRequest('Unit is empty', { shop })
     }
 
-    const unitEntity = await strapi.entityService.create('api::unit.unit', {
-      data: {
-        shop,
-        name: unitName
-      }
-    });
 
-    return unitEntity
+    return await strapi.db.transaction(async ({ trx, rollback, commit, onCommit, onRollback }) => {
+      const unitEntity = await strapi.entityService.create('api::unit.unit', {
+        data: {
+          shop,
+          name: unitName
+        }
+      });
+
+      await commit();
+
+      return unitEntity
+    })
   },
   async units(ctx, next) {
     const shop = ctx.params.shop

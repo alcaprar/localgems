@@ -212,6 +212,8 @@ export default {
         this.$log().info("[sale][addProduct] result", result);
         document.getElementById('close-modal')?.click();
         await this.refreshSaleData();
+      } else {
+        this.$toast.error("C'è stato un errore nell'inserimento del prodotto.")
       }
     },
     async onSave() {

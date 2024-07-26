@@ -23,66 +23,73 @@ export default factories.createCoreController('api::sale.sale', {
         const shopId = data.shop;
         const now = new Date();
 
-        const salesOpenNow = await strapi.db.query('api::sale.sale').findMany({
-            where: { shop: shopId, startDate: { $lt: now }, endDate: { $gt: now } },
-            limit: 1,
-            orderBy: { endDate: 'desc' }
-        });
-        strapi.log.info('[controllers][sales] salesOpenNow', salesOpenNow)
-        if (salesOpenNow.length > 0) {
-            return ctx.badRequest('There is already another sale open')
-        }
+        return await strapi.db.transaction(async ({ trx, rollback, commit, onCommit, onRollback }) => {
+            const salesOpenNow = await strapi.db.query('api::sale.sale').findMany({
+                where: { shop: shopId, startDate: { $lt: now }, endDate: { $gt: now } },
+                limit: 1,
+                orderBy: { endDate: 'desc' }
+            });
+            strapi.log.info('[controllers][sales] salesOpenNow', salesOpenNow)
+            if (salesOpenNow.length > 0) {
+                return ctx.badRequest('There is already another sale open')
+            }
 
-        const sale = await strapi.entityService.create('api::sale.sale', {
-            data: data
-        })
-
-        const clients = await strapi.db.query('api::client.client').findMany({
-            where: { shop: shopId },
-        });
-        strapi.log.info('[controllers][sales] clients', clients)
-
-        for (let client of clients) {
-            await strapi.entityService.create('api::order.order', {
-                data: {
-                    sale: sale.id,
-                    client: client.id
-                }
+            const sale = await strapi.entityService.create('api::sale.sale', {
+                data: data
             })
-        }
 
-        return { data: sale }
+            const clients = await strapi.db.query('api::client.client').findMany({
+                where: { shop: shopId },
+            });
+            strapi.log.info('[controllers][sales] clients', clients)
+
+            for (let client of clients) {
+                await strapi.entityService.create('api::order.order', {
+                    data: {
+                        sale: sale.id,
+                        client: client.id
+                    }
+                })
+            }
+            await commit();
+
+            return { data: sale }
+        })
     },
     async addProduct(ctx) {
         let saleId = ctx.params.id;
         const { data } = ctx.request.body;
         const productId = data.productId;
 
-        const productSaleEntity = await strapi.entityService.create('api::product-sale.product-sale', {
-            data: {
-                product: productId,
-                sale: saleId,
-                total_available: 0,
-                current_available: 0,
-                amount_in_minor: 0
-            }
-        })
-
-        const orders = await strapi.db.query('api::order.order').findMany({
-            where: { sale: saleId },
-        });
-
-        for (let order of orders) {
-            await strapi.entityService.create('api::order-item.order-item', {
+        return await strapi.db.transaction(async ({ trx, rollback, commit, onCommit, onRollback }) => {
+            const productSaleEntity = await strapi.entityService.create('api::product-sale.product-sale', {
                 data: {
-                    product_sale: productSaleEntity.id,
-                    order: order.id,
-                    quantity: 0
+                    product: productId,
+                    sale: saleId,
+                    total_available: 0,
+                    current_available: 0,
+                    amount_in_minor: 0
                 }
             })
-        }
 
-        return productSaleEntity
+            const orders = await strapi.db.query('api::order.order').findMany({
+                where: { sale: saleId },
+            });
+
+            for (let order of orders) {
+                await strapi.entityService.create('api::order-item.order-item', {
+                    data: {
+                        product_sale: productSaleEntity.id,
+                        order: order.id,
+                        quantity: 0
+                    }
+                })
+            }
+
+            await commit();
+
+            return productSaleEntity
+        })
     },
     async getOrders(ctx) {
         let saleId = ctx.params.id;

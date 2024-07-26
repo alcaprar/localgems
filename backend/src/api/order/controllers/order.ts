@@ -29,13 +29,18 @@ export default factories.createCoreController('api::order.order', {
     }
     let notes = JSON.parse(ctx.request.body).notes || ''
 
-    let order = await strapi.entityService.update('api::order.order', order_id, {
-      data: {
-        notes
-      }
-    })
 
-    return order
+    return await strapi.db.transaction(async ({ trx, rollback, commit, onCommit, onRollback }) => {
+      let order = await strapi.entityService.update('api::order.order', order_id, {
+        data: {
+          notes
+        }
+      })
+
+      await commit();
+
+      return order
+    })
   },
   async confirm(ctx, next) {
     strapi.log.info('confirm', ctx.params)
@@ -44,12 +49,16 @@ export default factories.createCoreController('api::order.order', {
       return ctx.badRequest('Missing or invalid id', { orderId })
     }
 
-    let order = await strapi.entityService.update('api::order.order', orderId, {
-      data: {
-        last_confirmed_at: new Date()
-      }
-    })
+    return await strapi.db.transaction(async ({ trx, rollback, commit, onCommit, onRollback }) => {
+      let order = await strapi.entityService.update('api::order.order', orderId, {
+        data: {
+          last_confirmed_at: new Date()
+        }
+      })
 
-    return order
+      await commit();
+
+      return order
+    })
   }
 })
