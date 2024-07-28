@@ -17,8 +17,25 @@ const logger = pino({
 });
 const SHOP_ID = 1 // hack because for the time being there will be just one shop
 
+async function fetchAuthenticated(url: string, body?: string): Promise<Response> {
+  let token = useCookie("token")
+  console.log("token", token.value);
+  let params: any = {
+    headers: {
+      "Authorization": `Bearer ${token.value}`
+    }
+  };
+  if (body !== 'undefined') {
+    params.body = JSON.stringify(body)
+    params.headers["Content-Type"] = "application/json"
+  }
+  return await fetch(url, params)
+}
+
 class ApiClient {
   baseUrl: string
+
+  auth: AuthClient
   clients: ClientsClient
   orders: OrdersClient
   products: ProductsClient
@@ -29,6 +46,8 @@ class ApiClient {
     baseUrl: string,
   ) {
     this.baseUrl = `${baseUrl}/api`
+
+    this.auth = new AuthClient(this.baseUrl)
     this.clients = new ClientsClient(this.baseUrl)
     this.orders = new OrdersClient(this.baseUrl)
     this.products = new ProductsClient(this.baseUrl)
@@ -38,6 +57,48 @@ class ApiClient {
 
   getBaseUrl(): string {
     return this.baseUrl
+  }
+}
+
+
+class AuthClient {
+  baseUrl: string
+
+  constructor(
+    baseUrl: string,
+  ) {
+    this.baseUrl = baseUrl
+  }
+
+  async login(username: string, password: string) {
+    logger.debug("[ApiClient][Auth][login]",);
+    const url = `${this.baseUrl}/auth/local`;
+    try {
+      let response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identifier: username,
+          password
+        })
+      });
+      if (response.status == 404) {
+        logger.warn("[ApiClient][Auth][login] not found")
+        return Err(ApiErrorVariant.NotFound)
+      } else if (response.status == 200) {
+        let result: AuthDto = (await response.json());
+        logger.debug("[ApiClient][Auth][login] result", result);
+        return Ok(result)
+      } else {
+        logger.error("[ApiClient][Auth][login] Error", await response.text())
+        return Err(ApiErrorVariant.Generic)
+      }
+    } catch (error) {
+      logger.error("[ApiClient][Auth][login] Error", error)
+      return Err(ApiErrorVariant.Generic)
+    }
   }
 }
 
@@ -142,7 +203,7 @@ class UnitsClient {
     logger.debug("[ApiClient][Units][getAll]",);
     const url = `${this.baseUrl}/shops/${SHOP_ID}/units`;
     try {
-      let response = await fetch(url);
+      let response = await fetchAuthenticated(url);
       if (response.status == 404) {
         logger.warn("[ApiClient][Units][getAll] not found")
         return Err(ApiErrorVariant.NotFound)
@@ -176,7 +237,6 @@ class UnitsClient {
       if (response.status == 404) {
         return Err(ApiErrorVariant.NotFound)
       }
-      logger.debug("[ApiClient][Units][create] response", response)
       let result = (await response.json());
       logger.debug("[ApiClient][Units][create] result", result);
       if (result.id != null) {

@@ -27,10 +27,7 @@ export default {
     {
       method: 'GET',
       path: '/shops/:shop/units',
-      handler: 'shop.units',
-      config: {
-        auth: false
-      }
+      handler: 'shop.units'
     },
     {
       method: 'POST',

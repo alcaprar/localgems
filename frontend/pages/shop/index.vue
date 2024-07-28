@@ -11,7 +11,10 @@
 <script lang="ts">
 export default {
   setup() {
-    definePageMeta({ layout: "admin" });
+    definePageMeta({ 
+      layout: "admin",
+      middleware: "auth"
+    });
   },
   created() {
     this.$log().info('test', this.$backend)
