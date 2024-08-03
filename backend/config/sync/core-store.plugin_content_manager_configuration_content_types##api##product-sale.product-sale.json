@@ -1,0 +1,213 @@
+{
+  "key": "plugin_content_manager_configuration_content_types::api::product-sale.product-sale",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "id",
+      "defaultSortBy": "id",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "product": {
+        "edit": {
+          "label": "product",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "name"
+        },
+        "list": {
+          "label": "product",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "total_available": {
+        "edit": {
+          "label": "total_available",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "total_available",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "amount_in_minor": {
+        "edit": {
+          "label": "amount_in_minor",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "amount_in_minor",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "sale": {
+        "edit": {
+          "label": "sale",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "id"
+        },
+        "list": {
+          "label": "sale",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "current_available": {
+        "edit": {
+          "label": "current_available",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "current_available",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "order_items": {
+        "edit": {
+          "label": "order_items",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "id"
+        },
+        "list": {
+          "label": "order_items",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "createdAt": {
+        "edit": {
+          "label": "createdAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "createdAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedAt": {
+        "edit": {
+          "label": "updatedAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "updatedAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "createdBy": {
+        "edit": {
+          "label": "createdBy",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true,
+          "mainField": "firstname"
+        },
+        "list": {
+          "label": "createdBy",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedBy": {
+        "edit": {
+          "label": "updatedBy",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true,
+          "mainField": "firstname"
+        },
+        "list": {
+          "label": "updatedBy",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "product",
+        "total_available",
+        "amount_in_minor"
+      ],
+      "edit": [
+        [
+          {
+            "name": "product",
+            "size": 6
+          },
+          {
+            "name": "total_available",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "amount_in_minor",
+            "size": 4
+          },
+          {
+            "name": "sale",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "current_available",
+            "size": 4
+          },
+          {
+            "name": "order_items",
+            "size": 6
+          }
+        ]
+      ]
+    },
+    "uid": "api::product-sale.product-sale"
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}
