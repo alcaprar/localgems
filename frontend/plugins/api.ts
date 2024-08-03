@@ -626,11 +626,11 @@ class SalesClient {
     logger.debug(`[ApiClient][Sales][addProduct] saleId ${saleId} productId ${productId}`)
     const url = `${this.baseUrl}/sales/${saleId}/products`;
     try {
-      let body = JSON.stringify({
+      let body = {
         data: {
           productId: productId
         },
-      });
+      };
       logger.debug("[ApiClient][Sales][addProduct] body", body)
       let response = await fetchAuthenticated('POST', url, body);
       if (response.status == 404) {
