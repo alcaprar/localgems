@@ -1,0 +1,19 @@
+{
+  "name": "Authenticated",
+  "description": "Default role given to authenticated user.",
+  "type": "authenticated",
+  "permissions": [
+    {
+      "action": "api::order-item.order-item.increment"
+    },
+    {
+      "action": "api::order.order.updateNotes"
+    },
+    {
+      "action": "plugin::users-permissions.auth.changePassword"
+    },
+    {
+      "action": "plugin::users-permissions.user.me"
+    }
+  ]
+}
