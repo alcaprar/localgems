@@ -25,6 +25,11 @@ export interface ResponseItem<T> {
   id: number;
 }
 
+export interface AuthDto {
+  jwt: string,
+  user: string
+}
+
 export interface OrderDto {
   id: number;
   notes: string;

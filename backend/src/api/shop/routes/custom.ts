@@ -12,9 +12,6 @@ export default {
       method: 'GET',
       path: '/shops/:shop/products',
       handler: 'shop.products',
-      config: {
-        auth: false
-      }
     },
     {
       method: 'GET',
@@ -27,18 +24,12 @@ export default {
     {
       method: 'GET',
       path: '/shops/:shop/units',
-      handler: 'shop.units',
-      config: {
-        auth: false
-      }
+      handler: 'shop.units'
     },
     {
       method: 'POST',
       path: '/shops/:shop/units',
       handler: 'shop.addUnit',
-      config: {
-        auth: false
-      }
     },
     {
       method: 'GET',

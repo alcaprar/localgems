@@ -31,7 +31,10 @@ import utils from "~/utils";
 
 export default {
   setup() {
-    definePageMeta({ layout: "admin" });
+    definePageMeta({
+      layout: "admin",
+      middleware: "auth"
+    });
   },
 
   data() {
