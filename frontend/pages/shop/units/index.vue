@@ -45,7 +45,10 @@
 <script lang="ts">
 export default {
     setup() {
-        definePageMeta({ layout: "admin" });
+        definePageMeta({
+            layout: "admin",
+            middleware: "auth"
+        });
     },
 
     data() {

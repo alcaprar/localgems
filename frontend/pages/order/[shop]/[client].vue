@@ -99,7 +99,7 @@ export default {
   async created() {
     this.$loader.startLoader();
 
-    let result = await this.$backend.clients.get(this.shopSlug, this.clientUsername);
+    let result = await this.$backend.clients.getByUsername(this.shopSlug, this.clientUsername);
     this.$loader.stopLoader();
     if (result.ok) {
       if (result.ok) {

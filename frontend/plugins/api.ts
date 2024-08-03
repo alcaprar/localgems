@@ -17,10 +17,11 @@ const logger = pino({
 });
 const SHOP_ID = 1 // hack because for the time being there will be just one shop
 
-async function fetchAuthenticated(url: string, body?: string): Promise<Response> {
+async function fetchAuthenticated(method: string, url: string, body?: any): Promise<Response> {
   let token = useCookie("token")
   console.log("token", token.value);
   let params: any = {
+    method,
     headers: {
       "Authorization": `Bearer ${token.value}`
     }
@@ -112,7 +113,7 @@ class ClientsClient {
   }
 
 
-  async get(shopSlug: string, clientUsername: string): Promise<Result<ClientDto, ApiErrorVariant>> {
+  async getByUsername(shopSlug: string, clientUsername: string): Promise<Result<ClientDto, ApiErrorVariant>> {
     logger.debug("[ApiClient][Clients][get]",);
     const url = `${this.baseUrl}/shops/${shopSlug}/${clientUsername}`;
     try {
@@ -138,7 +139,7 @@ class ClientsClient {
     logger.debug("[ApiClient][Clients][getAll]",);
     const url = `${this.baseUrl}/shops/${SHOP_ID}/clients`;
     try {
-      let response = await fetch(url);
+      let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
         logger.warn("[ApiClient][Clients][getAll] not found")
         return Err(ApiErrorVariant.NotFound)
@@ -156,21 +157,15 @@ class ClientsClient {
     logger.debug("[ApiClient][Clients][create] client", client)
     const url = `${this.baseUrl}/clients`;
     try {
-      let body = JSON.stringify({
+      let body = {
         data: {
           username: client.username,
           name: client.name,
           shop: SHOP_ID
         },
-      });
+      };
       logger.debug("[ApiClient][Clients][create] body", body)
-      let response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
+      let response = await fetchAuthenticated('POST', url, body);
       if (response.status == 404) {
         return Err(ApiErrorVariant.NotFound)
       }
@@ -203,7 +198,7 @@ class UnitsClient {
     logger.debug("[ApiClient][Units][getAll]",);
     const url = `${this.baseUrl}/shops/${SHOP_ID}/units`;
     try {
-      let response = await fetchAuthenticated(url);
+      let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
         logger.warn("[ApiClient][Units][getAll] not found")
         return Err(ApiErrorVariant.NotFound)
@@ -221,19 +216,13 @@ class UnitsClient {
     logger.debug("[ApiClient][Units][create]", { unit })
     const url = `${this.baseUrl}/shops/${SHOP_ID}/units`;
     try {
-      let body = JSON.stringify({
+      let body = {
         data: {
           name: unit.name,
         },
-      });
+      };
       logger.debug("[ApiClient][Units][create] body", body)
-      let response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
+      let response = await fetchAuthenticated('POST', url, body);
       if (response.status == 404) {
         return Err(ApiErrorVariant.NotFound)
       }
@@ -360,7 +349,7 @@ class OrdersClient {
     logger.debug("[ApiClient][Orders][get] orderId", orderId)
     const url = `${this.baseUrl}/orders/${orderId}`;
     try {
-      let response = await fetch(url);
+      let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
         logger.warn("[ApiClient][Orders][get] not found");
         return Err(ApiErrorVariant.NotFound)
@@ -387,7 +376,7 @@ class ProductsClient {
     logger.debug("[ApiClient][Products][get] productId", productId)
     const url = `${this.baseUrl}/products/${productId}`;
     try {
-      let response = await fetch(url);
+      let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
         logger.warn("[ApiClient][Products][get] not found");
         return Err(ApiErrorVariant.NotFound)
@@ -406,7 +395,7 @@ class ProductsClient {
     logger.debug("[ApiClient][Products][getAll]",);
     const url = `${this.baseUrl}/shops/${SHOP_ID}/products`;
     try {
-      let response = await fetch(url);
+      let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
         logger.warn("[ApiClient][Products][getAll] not found")
         return Err(ApiErrorVariant.NotFound)
@@ -424,21 +413,15 @@ class ProductsClient {
     logger.debug("[ApiClient][Products][create] product", product)
     const url = `${this.baseUrl}/products`;
     try {
-      let body = JSON.stringify({
+      let body = {
         data: {
           unit: product.unit,
           name: product.name,
           shop: SHOP_ID,
         },
-      });
+      };
       logger.debug("[ApiClient][Products][create] body", body)
-      let response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
+      let response = await fetchAuthenticated('POST', url, body);
       if (response.status == 404) {
         return Err(ApiErrorVariant.NotFound)
       }
@@ -461,21 +444,15 @@ class ProductsClient {
     let productId = product.id;
     const url = `${this.baseUrl}/products/${productId}`;
     try {
-      let body = JSON.stringify({
+      let body = {
         data: {
           unit: product.unit,
           name: product.name,
           shop: SHOP_ID,
         },
-      });
+      };
       logger.debug("[ApiClient][Products][update] body", body)
-      let response = await fetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
+      let response = await fetchAuthenticated('PUT', url, body);
       if (response.status == 404) {
         return Err(ApiErrorVariant.NotFound)
       }
@@ -505,7 +482,7 @@ class SalesClient {
     logger.debug("[ApiClient][Sales][get] saleId", saleId)
     const url = `${this.baseUrl}/sales/${saleId}`;
     try {
-      let response = await fetch(url);
+      let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
         logger.warn("[ApiClient][Sales][get] not found");
         return Err(ApiErrorVariant.NotFound)
@@ -523,7 +500,7 @@ class SalesClient {
     logger.debug("[ApiClient][Sales][getAll] SHOP_ID", SHOP_ID)
     const url = `${this.baseUrl}/shops/${SHOP_ID}/sales`;
     try {
-      let response = await fetch(url);
+      let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
         logger.warn("[ApiClient][Sales][getAll] not found");
         return Err(ApiErrorVariant.NotFound)
@@ -541,7 +518,7 @@ class SalesClient {
     logger.debug("[ApiClient][Sales][getOrders] saleId", saleId)
     const url = `${this.baseUrl}/sales/${saleId}/orders`;
     try {
-      let response = await fetch(url);
+      let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
         logger.warn("[ApiClient][Sales][getOrders] not found");
         return Err(ApiErrorVariant.NotFound)
@@ -559,21 +536,15 @@ class SalesClient {
     logger.debug("[ApiClient][Sales][create] sale", sale)
     const url = `${this.baseUrl}/sales`;
     try {
-      let body = JSON.stringify({
+      let body = {
         data: {
           startDate: sale.startDate,
           endDate: sale.endDate,
           shop: SHOP_ID,
         },
-      });
+      };
       logger.debug("[ApiClient][Sales][create] body", body)
-      let response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
+      let response = await fetchAuthenticated('POST', url, body);
       if (response.status == 404) {
         return Err(ApiErrorVariant.NotFound)
       }
@@ -596,21 +567,15 @@ class SalesClient {
     const saleId = sale.id;
     const url = `${this.baseUrl}/sales/${saleId}`;
     try {
-      let body = JSON.stringify({
+      let body = {
         data: {
           startDate: sale.startDate,
           endDate: sale.endDate,
           shop: SHOP_ID,
         },
-      });
+      };
       logger.debug("[ApiClient][Sales][update] body", body)
-      let response = await fetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
+      let response = await fetchAuthenticated('PUT', url, body);
       if (response.status == 404) {
         return Err(ApiErrorVariant.NotFound)
       }
@@ -639,13 +604,7 @@ class SalesClient {
         },
       });
       logger.debug("[ApiClient][Sales][addProduct] body", body)
-      let response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
+      let response = await fetchAuthenticated('POST', url, body);
       if (response.status == 404) {
         return Err(ApiErrorVariant.NotFound)
       }
@@ -667,23 +626,16 @@ class SalesClient {
     logger.debug(`[ApiClient][Sales][updateProductAmount] productSaleId ${productSaleId}`)
     const url = `${this.baseUrl}/product-sales/${productSaleId}/amount`;
     try {
-      let body = JSON.stringify({
+      let body = {
         data: {
           amount_in_minor: amount_in_minor
         },
-      });
+      };
       logger.debug("[ApiClient][Sales][updateProductAmount] body", body)
-      let response = await fetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
+      let response = await fetchAuthenticated('PUT', url, body);
       if (response.status == 404) {
         return Err(ApiErrorVariant.NotFound)
       }
-      logger.debug("[ApiClient][Sales][updateProductAmount] response", response)
       let result = (await response.json());
       logger.debug("[ApiClient][Sales][updateProductAmount] result", result);
       if (result.id != null) {
@@ -701,19 +653,13 @@ class SalesClient {
     logger.debug(`[ApiClient][Sales][updateProductAvailability] total_available ${total_available}`)
     const url = `${this.baseUrl}/product-sales/${productSaleId}/totalAvailable`;
     try {
-      let body = JSON.stringify({
+      let body = {
         data: {
           total_available: total_available
         },
-      });
+      };
       logger.debug("[ApiClient][Sales][updateProductAvailability] body", body)
-      let response = await fetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
+      let response = await fetchAuthenticated('PUT', url, body);
       logger.debug("[ApiClient][Sales][updateProductAvailability] response", response)
       if (response.status != 200) {
         return Err(ApiErrorVariant.Generic)

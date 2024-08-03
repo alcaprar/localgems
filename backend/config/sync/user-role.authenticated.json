@@ -4,10 +4,52 @@
   "type": "authenticated",
   "permissions": [
     {
-      "action": "api::order-item.order-item.increment"
+      "action": "api::client.client.create"
     },
     {
-      "action": "api::order.order.updateNotes"
+      "action": "api::order.order.find"
+    },
+    {
+      "action": "api::product-sale.product-sale.updateAmount"
+    },
+    {
+      "action": "api::product-sale.product-sale.updateTotalAvailable"
+    },
+    {
+      "action": "api::product.product.create"
+    },
+    {
+      "action": "api::product.product.findOne"
+    },
+    {
+      "action": "api::sale.sale.addProduct"
+    },
+    {
+      "action": "api::sale.sale.create"
+    },
+    {
+      "action": "api::sale.sale.findOne"
+    },
+    {
+      "action": "api::sale.sale.getOrders"
+    },
+    {
+      "action": "api::sale.sale.update"
+    },
+    {
+      "action": "api::shop.shop.addUnit"
+    },
+    {
+      "action": "api::shop.shop.clients"
+    },
+    {
+      "action": "api::shop.shop.products"
+    },
+    {
+      "action": "api::shop.shop.sales"
+    },
+    {
+      "action": "api::shop.shop.units"
     },
     {
       "action": "plugin::users-permissions.auth.changePassword"

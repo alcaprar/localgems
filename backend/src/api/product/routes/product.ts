@@ -9,9 +9,6 @@ export default factories.createCoreRouter('api::product.product', {
     create: {
       auth: false
     },
-    findOne: {
-      auth: false
-    },
     update: {
       auth: false
     }

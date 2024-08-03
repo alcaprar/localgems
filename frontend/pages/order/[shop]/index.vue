@@ -44,7 +44,7 @@ export default {
             }
         },
         async clientExist(clientUsername: string): Promise<boolean> {
-            let result = await this.$backend.clients.get(this.shopSlug, clientUsername);
+            let result = await this.$backend.clients.getByUsername(this.shopSlug, clientUsername);
             return result.ok
         },
     }
