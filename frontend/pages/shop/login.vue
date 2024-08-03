@@ -3,13 +3,11 @@
         <form>
             <h1 class="h3 mb-3 fw-normal">Fai il login per entrare nell'area riservata</h1>
             <div class="form-floating">
-                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"
-                    v-model="username">
-                <label for="floatingInput">Email address</label>
+                <input class="form-control" id="floatingInput" v-model="username">
+                <label for="floatingInput">Indirizzo email o nome utente</label>
             </div>
             <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
-                    v-model="password">
+                <input type="password" class="form-control" id="floatingPassword" v-model="password">
                 <label for="floatingPassword">Password</label>
             </div>
 

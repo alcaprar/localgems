@@ -33,9 +33,6 @@ export default {
       method: 'POST',
       path: '/shops/:shop/units',
       handler: 'shop.addUnit',
-      config: {
-        auth: false
-      }
     },
     {
       method: 'GET',
