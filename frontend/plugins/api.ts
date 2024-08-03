@@ -15,7 +15,13 @@ export default defineNuxtPlugin((nuxtApp) => {
 const logger = pino({
   level: 'debug',
 });
-const SHOP_ID = 1 // hack because for the time being there will be just one shop
+
+function shopId(): number {
+  let shop = useCookie("shop", { default: () => { { id: -1 } } });
+  if (shop.value) {
+    return shop.value.id
+  }
+}
 
 async function fetchAuthenticated(method: string, url: string, body?: any): Promise<Response> {
   let token = useCookie("token")
@@ -101,6 +107,28 @@ class AuthClient {
       return Err(ApiErrorVariant.Generic)
     }
   }
+
+  async me(): Promise<Result<any, ApiErrorVariant>> {
+    logger.debug("[ApiClient][Auth][me]",);
+    const url = `${this.baseUrl}/users/me?populate=shop`;
+    try {
+      let response = await fetchAuthenticated('GET', url);
+      if (response.status == 404) {
+        logger.warn("[ApiClient][Auth][me] not found")
+        return Err(ApiErrorVariant.NotFound)
+      } else if (response.status == 200) {
+        let result = (await response.json());
+        logger.debug("[ApiClient][Auth][me] result", result);
+        return Ok(result)
+      } else {
+        logger.error("[ApiClient][Auth][me] Error", await response.text())
+        return Err(ApiErrorVariant.Generic)
+      }
+    } catch (error) {
+      logger.error("[ApiClient][Auth][login] Error", error)
+      return Err(ApiErrorVariant.Generic)
+    }
+  }
 }
 
 class ClientsClient {
@@ -137,7 +165,7 @@ class ClientsClient {
 
   async getAll(): Promise<Result<ClientDto[], ApiErrorVariant>> {
     logger.debug("[ApiClient][Clients][getAll]",);
-    const url = `${this.baseUrl}/shops/${SHOP_ID}/clients`;
+    const url = `${this.baseUrl}/shops/${shopId()}/clients`;
     try {
       let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
@@ -161,7 +189,7 @@ class ClientsClient {
         data: {
           username: client.username,
           name: client.name,
-          shop: SHOP_ID
+          shop: shopId()
         },
       };
       logger.debug("[ApiClient][Clients][create] body", body)
@@ -196,7 +224,7 @@ class UnitsClient {
 
   async getAll(): Promise<Result<UnitDto[], ApiErrorVariant>> {
     logger.debug("[ApiClient][Units][getAll]",);
-    const url = `${this.baseUrl}/shops/${SHOP_ID}/units`;
+    const url = `${this.baseUrl}/shops/${shopId()}/units`;
     try {
       let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
@@ -214,7 +242,7 @@ class UnitsClient {
 
   async create(unit: UnitDto): Promise<Result<number, ApiErrorVariant>> {
     logger.debug("[ApiClient][Units][create]", { unit })
-    const url = `${this.baseUrl}/shops/${SHOP_ID}/units`;
+    const url = `${this.baseUrl}/shops/${shopId()}/units`;
     try {
       let body = {
         data: {
@@ -393,7 +421,7 @@ class ProductsClient {
 
   async getAll(): Promise<Result<ProductDto[], ApiErrorVariant>> {
     logger.debug("[ApiClient][Products][getAll]",);
-    const url = `${this.baseUrl}/shops/${SHOP_ID}/products`;
+    const url = `${this.baseUrl}/shops/${shopId()}/products`;
     try {
       let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
@@ -417,7 +445,7 @@ class ProductsClient {
         data: {
           unit: product.unit,
           name: product.name,
-          shop: SHOP_ID,
+          shop: shopId(),
         },
       };
       logger.debug("[ApiClient][Products][create] body", body)
@@ -448,7 +476,7 @@ class ProductsClient {
         data: {
           unit: product.unit,
           name: product.name,
-          shop: SHOP_ID,
+          shop: shopId(),
         },
       };
       logger.debug("[ApiClient][Products][update] body", body)
@@ -497,8 +525,8 @@ class SalesClient {
   }
 
   async getAll(): Promise<Result<SaleDto[], ApiErrorVariant>> {
-    logger.debug("[ApiClient][Sales][getAll] SHOP_ID", SHOP_ID)
-    const url = `${this.baseUrl}/shops/${SHOP_ID}/sales`;
+    logger.debug("[ApiClient][Sales][getAll] shopId", shopId())
+    const url = `${this.baseUrl}/shops/${shopId()}/sales`;
     try {
       let response = await fetchAuthenticated('GET', url);
       if (response.status == 404) {
@@ -540,7 +568,7 @@ class SalesClient {
         data: {
           startDate: sale.startDate,
           endDate: sale.endDate,
-          shop: SHOP_ID,
+          shop: shopId(),
         },
       };
       logger.debug("[ApiClient][Sales][create] body", body)
@@ -571,7 +599,7 @@ class SalesClient {
         data: {
           startDate: sale.startDate,
           endDate: sale.endDate,
-          shop: SHOP_ID,
+          shop: shopId(),
         },
       };
       logger.debug("[ApiClient][Sales][update] body", body)

@@ -43,6 +43,12 @@
       "action": "api::shop.shop.clients"
     },
     {
+      "action": "api::shop.shop.find"
+    },
+    {
+      "action": "api::shop.shop.findOne"
+    },
+    {
       "action": "api::shop.shop.products"
     },
     {

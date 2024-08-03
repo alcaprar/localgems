@@ -31,11 +31,20 @@ export default {
             const authenticated = useState('authenticated', () => false);
             const token = useCookie('token');
             const user = useCookie('user');
+            const shop = useCookie('shop');
 
             let response = await this.$backend.auth.login(this.username, this.password);
             if (response.ok) {
                 token.value = response.val.jwt;
                 user.value = response.val.user;
+                authenticated.value = true
+
+                let me = await this.$backend.auth.me();
+                if (me.ok && me.val.shop) {
+                    shop.value = me.val.shop;
+                } else {
+                    this.$toast.error("C'è stato un errore nel login")
+                }
 
                 navigateTo("/shop")
             } else {
