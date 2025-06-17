@@ -1,6 +1,8 @@
 {
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2"
   },
   "scripts": {
     "dev": "concurrently -c \"yellow,blue\" \"yarn  dev:backend\" \"yarn dev:frontend\"",
@@ -9,6 +11,15 @@
     "dev:frontend": "cd frontend && yarn dev",
     "install:frontend": "cd frontend && yarn install",
     "install:backend": "cd backend && yarn install",
-    "install": "concurrently -c  \"yellow,blue\" \"yarn install:backend\" \"yarn install:frontend\""
+    "install": "concurrently -c  \"yellow,blue\" \"yarn install:backend\" \"yarn install:frontend\"",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "backend/**/*.{js,ts}": [
+      "(cd backend && yarn lint)"
+    ],
+    "frontend/**/*.{js,ts,vue,mjs}": [
+      "(cd frontend && yarn lint)"
+    ]
   }
 }
