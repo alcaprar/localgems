@@ -5,9 +5,9 @@
 import { factories } from '@strapi/strapi'
 
 export default factories.createCoreRouter('api::order.order', {
-    config: {
-        findOne: {
-            auth: false
-        }
+  config: {
+    findOne: {
+      auth: false
     }
+  }
 })

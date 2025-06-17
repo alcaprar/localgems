@@ -11,7 +11,7 @@ export default {
     {
       method: 'GET',
       path: '/shops/:shop/products',
-      handler: 'shop.products',
+      handler: 'shop.products'
     },
     {
       method: 'GET',
@@ -29,7 +29,7 @@ export default {
     {
       method: 'POST',
       path: '/shops/:shop/units',
-      handler: 'shop.addUnit',
+      handler: 'shop.addUnit'
     },
     {
       method: 'GET',

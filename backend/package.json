@@ -11,6 +11,7 @@
     "build": "strapi build",
     "develop": "DATABASE_FILENAME=.tmp/dev.data.db ENV_PATH=$PWD/dev.env strapi develop --debug",
     "format": "prettier --write src/api/**/**.ts",
+    "lint": "eslint . --ext .ts",
     "start": "strapi start",
     "strapi": "strapi"
   },
@@ -26,7 +27,12 @@
     "strapi-plugin-config-sync": "^1.2.5",
     "styled-components": "5.3.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.5.0",
+    "prettier": "^3.5.3"
+  },
   "engines": {
     "node": ">=18.0.0 <=20.x.x",
     "npm": ">=6.0.0"

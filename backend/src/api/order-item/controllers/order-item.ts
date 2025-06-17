@@ -7,13 +7,12 @@ import { factories } from '@strapi/strapi'
 export default factories.createCoreController('api::order-item.order-item', {
   async increment(ctx, next) {
     strapi.log.info('increment', ctx.params, ctx.request.body)
-    let orderItemId = ctx.params.id
+    const orderItemId = ctx.params.id
     if (!orderItemId) {
       return ctx.badRequest('Missing or invalid id', {
         order_item_id: orderItemId
       })
     }
-
 
     return await strapi.db.transaction(async ({ trx, rollback, commit, onCommit, onRollback }) => {
       const orderItemEntity = await strapi.db
@@ -27,12 +26,16 @@ export default factories.createCoreController('api::order-item.order-item', {
         })
       }
 
-      let orderItem = await strapi.entityService.update('api::order-item.order-item', orderItemId, {
-        data: {
-          quantity: orderItemEntity.quantity + 1
+      const orderItem = await strapi.entityService.update(
+        'api::order-item.order-item',
+        orderItemId,
+        {
+          data: {
+            quantity: orderItemEntity.quantity + 1
+          }
         }
-      })
-      let productSale = await strapi.entityService.update(
+      )
+      const productSale = await strapi.entityService.update(
         'api::product-sale.product-sale',
         orderItemEntity.product_sale.id,
         {
@@ -42,7 +45,7 @@ export default factories.createCoreController('api::order-item.order-item', {
         }
       )
 
-      await commit();
+      await commit()
 
       return {
         orderItem,
@@ -53,7 +56,7 @@ export default factories.createCoreController('api::order-item.order-item', {
 
   async decrement(ctx, next) {
     strapi.log.info('decrement', ctx.params, ctx.request.body)
-    let orderItemId = ctx.params.id
+    const orderItemId = ctx.params.id
     if (!orderItemId) {
       return ctx.badRequest('Missing or invalid id', {
         order_item_id: orderItemId
@@ -72,12 +75,16 @@ export default factories.createCoreController('api::order-item.order-item', {
         })
       }
 
-      let orderItem = await strapi.entityService.update('api::order-item.order-item', orderItemId, {
-        data: {
-          quantity: orderItemEntity.quantity - 1
+      const orderItem = await strapi.entityService.update(
+        'api::order-item.order-item',
+        orderItemId,
+        {
+          data: {
+            quantity: orderItemEntity.quantity - 1
+          }
         }
-      })
-      let productSale = await strapi.entityService.update(
+      )
+      const productSale = await strapi.entityService.update(
         'api::product-sale.product-sale',
         orderItemEntity.product_sale.id,
         {
@@ -87,7 +94,7 @@ export default factories.createCoreController('api::order-item.order-item', {
         }
       )
 
-      await commit();
+      await commit()
 
       return {
         orderItem,

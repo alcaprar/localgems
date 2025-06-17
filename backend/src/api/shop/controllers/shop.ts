@@ -7,8 +7,8 @@ import sale from '../../sale/controllers/sale'
 
 export default factories.createCoreController('api::shop.shop', {
   async client(ctx, next) {
-    const shopSlug = ctx.params.shopSlug;
-    const clientUsername = ctx.params.clientUsername;
+    const shopSlug = ctx.params.shopSlug
+    const clientUsername = ctx.params.clientUsername
 
     strapi.log.info('[shop][client]', { shopSlug, clientUsername })
     const shopEntity = await strapi.db
@@ -29,7 +29,7 @@ export default factories.createCoreController('api::shop.shop', {
       return ctx.notFound('Client not found', { shop: shopSlug, client: clientUsername })
     }
 
-    return clientEntity;
+    return clientEntity
   },
   async lastOrder(ctx, next) {
     const shop = ctx.params.shop
@@ -89,9 +89,7 @@ export default factories.createCoreController('api::shop.shop', {
       return ctx.badRequest('Shop not found', { shop })
     }
 
-    const clientEntities = await strapi.db
-      .query('api::client.client')
-      .findMany({ where: { shop } })
+    const clientEntities = await strapi.db.query('api::client.client').findMany({ where: { shop } })
     strapi.log.info('[controllers][shop][clients] clientEntities', clientEntities)
 
     return clientEntities
@@ -125,22 +123,19 @@ export default factories.createCoreController('api::shop.shop', {
       return ctx.badRequest('Shop not found', { shop })
     }
 
-    const saleEntities = await strapi.db
-      .query('api::sale.sale')
-      .findMany({ where: { shop } })
+    const saleEntities = await strapi.db.query('api::sale.sale').findMany({ where: { shop } })
     strapi.log.info('saleEntities', saleEntities)
 
     return saleEntities
   },
   async addUnit(ctx, next) {
-    const shop = ctx.params.shop;
-    let unitName = ctx.request.body.data.name || '';
-    strapi.log.info({ shop, unitName });
+    const shop = ctx.params.shop
+    const unitName = ctx.request.body.data.name || ''
+    strapi.log.info({ shop, unitName })
 
-    if (unitName == "") {
+    if (unitName == '') {
       return ctx.badRequest('Unit is empty', { shop })
     }
-
 
     return await strapi.db.transaction(async ({ trx, rollback, commit, onCommit, onRollback }) => {
       const unitEntity = await strapi.entityService.create('api::unit.unit', {
@@ -148,9 +143,9 @@ export default factories.createCoreController('api::shop.shop', {
           shop,
           name: unitName
         }
-      });
+      })
 
-      await commit();
+      await commit()
 
       return unitEntity
     })
@@ -166,11 +161,9 @@ export default factories.createCoreController('api::shop.shop', {
       return ctx.badRequest('Shop not found', { shop })
     }
 
-    const unitEntities = await strapi.db
-      .query('api::unit.unit')
-      .findMany({ where: { shop } })
+    const unitEntities = await strapi.db.query('api::unit.unit').findMany({ where: { shop } })
     strapi.log.info('unitEntities', unitEntities)
 
     return unitEntities
-  },
+  }
 })
